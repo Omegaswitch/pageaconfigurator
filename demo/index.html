@@ -649,6 +649,7 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
      stacked bottom to top with plain alpha (no blend modes, no opacity, no filters), so stacking never brightens:
        1 body      body-{view}-{body}                          e.g. body-front-teal
      1b mid       mid-{view}                                  PCB and gaskets between body and frame (optional)
+     1c plate     plate-{view}                                switch plate on the midpiece (optional)
        2 frame     frame-{view}-{frame}                        e.g. frame-front-silver-anodized (frame and back weight)
        3 switches  switches-{layout}-{row}-{shift}-{switch}    front only
        4 keycaps   keycaps-{layout}-{row}-{shift}-{set}        front only
@@ -663,6 +664,7 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
     var list = [{ key: 'body', src: name('body-' + s.view + '-' + cur.kase.key), need: true }];
     var use = function (k) { return !r.layers || r.layers.indexOf(k) >= 0; }; // renders.layers limits the stack, e.g. ['body', 'frame']
     if (use('mid')) list.push({ key: 'mid', src: name('mid-' + s.view) }); // PCB and gaskets, the same in every build; optional
+    if (use('plate')) list.push({ key: 'plate', src: name('plate-' + s.view) }); // switch plate, the same in every build; optional
     if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
     if (open && s.view === 'front') {
       if (cur.sw && use('switches')) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
