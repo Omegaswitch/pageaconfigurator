@@ -77,7 +77,7 @@ SWG = [
  ('nightshift','SWG Nightshift','gmk-text', {}, build(['#2b2e33','#e4f22a'], ['#2b2e33','#e4f22a'], space=['#2b2e33','#e4f22a'])),  # alien alphas + alt mods: all caps dark, yellow legends
  ('prepress','SWG Prepress','gmk-text', {}, build(['#c9c7c2','#222222'], ['#2b2b2d',W], space=['#e04aa8',W], esc=['#1ea5d8',W], enter=['#efe62a','#222222'])),
  ('euler','SWG Euler','gmk-text', {}, build(['#3a3d42',W], ['#1f2124',W])),
- ('skeletoon','SWG Skeletoon','gmk-text', {}, build(['#59554f',W], ['#3f3c39',W])),
+ ('skeletoon','SWG Skeletoon','gmk-text', {}, build(['#4d4945','#ece9e4'], ['#4d4945','#ece9e4'])),  # one colour throughout
  ('beige','SWG Beige','gmk-text', {}, build(['#f0ece3','#2c2c2c'], ['#b7b2a4','#2c2c2c'])),
 ]
 # Sets that also come with an alt mods kit: base build (keys) plus alt build (altKeys); previews open on alt.
