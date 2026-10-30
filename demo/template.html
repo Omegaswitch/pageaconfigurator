@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pangea Mini IM Configurator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter+Tight:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* single light theme: white page, black type, red signal; options left, studio preview right */
+  --bg: #ffffff;
+  --ink: #000000;
+  --text: #1d1d1d;
+  --muted: #7a7a7a;
+  --line: #e3e3e1;
+  --soft: #f5f5f4;
+  --accent: #e0402a;
+  --font: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-weight: 500; }
+.notice { background: var(--accent); color: #fff; text-align: center; font-size: 13px; font-weight: 600; padding: 9px 16px; }
+.top { border-bottom: 1px solid var(--line); }
+.top-in { max-width: 1440px; margin: 0 auto; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.top-in strong { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.top-in span { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.wrap { max-width: 1440px; margin: 0 auto; padding: 48px 40px 80px; }
+@media (max-width: 900px) { .wrap { padding: 0 16px 56px; } .top-in { padding: 14px 16px; } }
+
+.cart-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); display: none; justify-content: flex-end; z-index: 50; }
+.cart-overlay.is-open { display: flex; }
+.cart { width: min(480px, 100%); height: 100%; background: var(--bg); color: var(--text); padding: 28px; overflow-y: auto; display: grid; align-content: start; gap: 18px; }
+.cart header { display: flex; justify-content: space-between; align-items: center; }
+.cart h2 { margin: 0; font-weight: 700; font-size: 28px; letter-spacing: -0.02em; color: var(--ink); }
+.cart-close { font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--ink); padding: 7px 16px; cursor: pointer; }
+.cart-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cart-note { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.cart-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.cart-line { padding: 14px 16px; background: var(--soft); border-radius: 12px; display: grid; gap: 8px; }
+.cart-line--part { margin-left: 18px; }
+.cart-line-top { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; font-weight: 700; color: var(--ink); }
+.cart-line-top span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cart-props { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 12.5px; }
+.cart-props dt { color: var(--muted); }
+.cart-props dd { margin: 0; word-break: break-word; }
+.cart-total { display: flex; justify-content: space-between; padding-top: 6px; font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+details { font-size: 12px; color: var(--muted); }
+summary { cursor: pointer; }
+pre { font-family: var(--mono); font-size: 11px; background: var(--soft); border-radius: 10px; padding: 12px; overflow-x: auto; line-height: 1.5; color: var(--text); }
+/*__CSS__*/
+</style>
+</head>
+<body>
+<div class="notice">Every build is assembled and tested before it ships</div>
+<div class="top"><div class="top-in"><strong>Build your Pangea Mini IM</strong><span>Preview · example prices</span></div></div>
+<main class="wrap">
+  <div data-pangea-configurator>
+    <script type="application/json" data-pc-config>__CONFIG__</script>
+  </div>
+</main>
+
+<div class="cart-overlay" id="cart" aria-hidden="true">
+  <aside class="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <header><h2 id="cart-title">Cart</h2><button type="button" class="cart-close" id="cart-close">Close</button></header>
+    <p class="cart-note">This is what the store would add. The build details sit on the kit line, and every part carries the same build number.</p>
+    <ul class="cart-lines" id="cart-lines"></ul>
+    <div class="cart-total"><span>Total</span><span id="cart-total"></span></div>
+    <details><summary>Request sent to /cart/add.js</summary><pre id="cart-json"></pre></details>
+  </aside>
+</div>
+
+<script>
+  var NAMES = __NAMES__, PRICES = __PRICES__;
+  window.PangeaDemoCart = function (body, conf) {
+    var fmt = conf.money, total = 0, esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var items = body.items.slice().reverse();
+    document.getElementById('cart-lines').innerHTML = items.map(function (it, i) {
+      var p = PRICES[it.id] * it.quantity; total += p;
+      var props = Object.keys(it.properties).filter(function (k) { return k.charAt(0) !== '_'; })
+        .map(function (k) { return '<dt>' + esc(k) + '</dt><dd>' + esc(it.properties[k]) + '</dd>'; }).join('');
+      return '<li class="cart-line' + (i ? ' cart-line--part' : '') + '"><div class="cart-line-top"><span>' + esc(NAMES[it.id]) + (it.quantity > 1 ? ' × ' + it.quantity : '') + '</span><span>' + fmt.format(p / 100) + '</span></div>' + (props ? '<dl class="cart-props">' + props + '</dl>' : '') + '</li>';
+    }).join('');
+    document.getElementById('cart-total').textContent = fmt.format(total / 100);
+    document.getElementById('cart-json').textContent = JSON.stringify(body, null, 2);
+    var o = document.getElementById('cart'); o.classList.add('is-open'); o.setAttribute('aria-hidden', 'false');
+    document.getElementById('cart-close').focus();
+  };
+  function closeCart() { var o = document.getElementById('cart'); o.classList.remove('is-open'); o.setAttribute('aria-hidden', 'true'); }
+  document.getElementById('cart-close').addEventListener('click', closeCart);
+  document.getElementById('cart').addEventListener('click', function (e) { if (e.target.id === 'cart') closeCart(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCart(); });
+</script>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

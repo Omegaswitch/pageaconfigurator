@@ -1,0 +1,181 @@
+{%- comment -%}
+  Pangea Mini IM configurator section.
+  Put it on a product template (it uses that product) or on a page (pick the kit product in the settings).
+  Case colors = variants of the kit product. Switches, keycaps and assembly = their own products,
+  added to the cart as linked lines in one request.
+{%- endcomment -%}
+{%- liquid
+  if section.settings.product != blank
+    assign kit = section.settings.product
+  else
+    assign kit = product
+  endif
+  assign assembly = section.settings.assembly_product
+-%}
+
+{{ 'pangea-configurator.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.load_fonts -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter+Tight:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+{%- endif -%}
+{%- style -%}
+  #pc-{{ section.id }} { --pc-accent: {{ section.settings.accent }}; --pc-bg: {{ section.settings.background }}; }
+{%- endstyle -%}
+{%- if section.settings.show_presets -%}<script src="{{ 'pangea-keycap-presets.js' | asset_url }}" defer></script>{%- endif -%}
+<script src="{{ 'pangea-configurator.js' | asset_url }}" defer></script>
+
+<div class="page-width pc-section" style="padding-block: {{ section.settings.padding }}px; background: {{ section.settings.background }};">
+  {%- if kit == blank -%}
+    <p>Pick the Pangea Mini kit product in this section's settings.</p>
+  {%- else -%}
+    <div id="pc-{{ section.id }}" data-pangea-configurator>
+      <script type="application/json" data-pc-config>
+        {
+          "title": {{ section.settings.title | default: kit.title | json }},
+          "kitLabel": {{ kit.title | json }},
+          "switchNote": {{ section.settings.switch_note | json }},
+          "currency": {{ cart.currency.iso_code | json }},
+          "locale": {{ request.locale.iso_code | json }},
+          "root": {{ routes.root_url | append: '/' | replace: '//', '/' | json }},
+          "syncUrl": true,
+          "showPresets": {{ section.settings.show_presets }},
+          "afterAdd": {{ section.settings.after_add | json }},
+          "renders": {% if section.settings.render_base != blank %}{ "base": {{ section.settings.render_base | json }}, "ext": {{ section.settings.render_ext | json }} }{% else %}null{% endif %},
+          "customKeycapImage": {% if section.settings.custom_keycap_image != blank %}{{ section.settings.custom_keycap_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
+          "kit": {
+            "title": {{ kit.title | json }},
+            "variants": [
+              {%- for v in kit.variants -%}
+                { "id": {{ v.id }}, "title": {{ v.title | json }}, "options": {{ v.options | json }}, "price": {{ v.price }}, "available": {{ v.available }} }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ]
+          },
+          "assembly": {% if assembly != blank %}{% assign av = assembly.selected_or_first_available_variant %}{ "id": {{ av.id }}, "title": {{ section.settings.assembly_label | default: assembly.title | json }}, "price": {{ av.price }}, "available": {{ av.available }} }{% else %}null{% endif %},
+          "blocks": [
+            {%- for block in section.blocks -%}
+              {%- assign b = block.settings -%}
+              {%- case block.type -%}
+                {%- when 'case_color' -%}
+                  { "type": "case_color", "name": {{ b.name | json }}, "hex": {{ b.swatch | json }}, "translucent": {{ b.translucent }},
+                    "img": {
+                      "front": {% if b.image_front != blank %}{{ b.image_front | image_url: width: 2000 | json }}{% else %}null{% endif %},
+                      "back": {% if b.image_back != blank %}{{ b.image_back | image_url: width: 2000 | json }}{% else %}null{% endif %}
+                    } }
+                {%- when 'frame' -%}
+                  { "type": "frame", "name": {{ b.name | json }}, "hex": {{ b.swatch | json }} }
+                {%- when 'switch' -%}
+                  {%- assign sv = b.product.selected_or_first_available_variant -%}
+                  { "type": "switch", "name": {{ b.name | default: b.product.title | json }}, "switch_type": {{ b.switch_type | json }},
+                    "housing": {{ b.housing | json }}, "stem": {{ b.stem | json }}, "premade": {{ b.premade }}, "note": {{ b.note | json }},
+                    "variant": {% if sv %}{ "id": {{ sv.id }}, "price": {{ sv.price }}, "available": {{ sv.available }} }{% else %}null{% endif %} }
+                {%- when 'keycap' -%}
+                  { "type": "keycap", "name": {{ b.name | json }}, "custom": {{ b.custom }},
+                    "alpha": {{ b.alpha | json }}, "mod": {{ b.mod | json }}, "accent": {{ b.accent | json }}, "legend": {{ b.legend | json }},
+                    "variants": [
+                      {%- if b.product != blank -%}
+                        {%- for v in b.product.variants -%}
+                          { "id": {{ v.id }}, "title": {{ v.title | json }}, "price": {{ v.price }}, "available": {{ v.available }} }{% unless forloop.last %},{% endunless %}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    ],
+                    "img": {
+                      "front": {% if b.image_front != blank %}{{ b.image_front | image_url: width: 2000 | json }}{% else %}null{% endif %},
+                      "front_ansi": {% if b.image_ansi != blank %}{{ b.image_ansi | image_url: width: 2000 | json }}{% else %}null{% endif %},
+                      "front_iso": {% if b.image_iso != blank %}{{ b.image_iso | image_url: width: 2000 | json }}{% else %}null{% endif %}
+                    } }
+              {%- endcase -%}
+              {%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+      </script>
+      <noscript>This configurator needs JavaScript.</noscript>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Pangea configurator",
+  "tag": "section",
+  "class": "section-pangea-configurator",
+  "settings": [
+    { "type": "header", "content": "Product" },
+    { "type": "product", "id": "product", "label": "Kit product", "info": "Leave empty on a product template to use that product. Variants: Body x Frame, e.g. 'Teal / Silver Anodized'." },
+    { "type": "product", "id": "assembly_product", "label": "Assembly product", "info": "Optional. Added to every build, e.g. 'Assembly & testing'." },
+    { "type": "text", "id": "assembly_label", "label": "Assembly label", "default": "Assembly" },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Pangea Mini IM" },
+    { "type": "text", "id": "switch_note", "label": "Switch note", "default": "Switches come as a set of 70, lubed and installed." },
+    { "type": "header", "content": "Pre-rendered images (optional)" },
+    { "type": "text", "id": "render_base", "label": "Render folder URL", "info": "Your Shopify Files URL ending in /files/. Files are named case-front-teal-silver-anodized.png, keycaps-ansi-625-split-rally-red.png and so on (see the setup guide). Missing files fall back to the drawing." },
+    { "type": "select", "id": "render_ext", "label": "Render file type", "default": ".png", "options": [ { "value": ".png", "label": "PNG" }, { "value": ".webp", "label": "WebP" } ] },
+    { "type": "checkbox", "id": "show_presets", "label": "Show 'Preview with famous sets' (GMK / SWG)", "default": true, "info": "Preview only. These sets are never added to the cart." },
+    { "type": "image_picker", "id": "custom_keycap_image", "label": "Custom keycaps placeholder", "info": "Shown when a customer picks custom keycaps. Leave empty to show blank caps." },
+    { "type": "header", "content": "Behaviour and look" },
+    {
+      "type": "select", "id": "after_add", "label": "After adding to cart", "default": "cart",
+      "options": [ { "value": "cart", "label": "Go to cart page" }, { "value": "stay", "label": "Stay (theme cart drawer)" } ]
+    },
+    { "type": "checkbox", "id": "load_fonts", "label": "Load Bricolage Grotesque, Inter Tight and Space Mono", "default": true, "info": "Turn off to use your theme's fonts." },
+    { "type": "color", "id": "accent", "label": "Accent (next-step hints, hover)", "default": "#e0402a" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" },
+    { "type": "range", "id": "padding", "label": "Vertical padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 32 }
+  ],
+  "blocks": [
+    {
+      "type": "case_color",
+      "name": "Case color",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "info": "Must match the kit's first variant option, e.g. 'Teal'." },
+        { "type": "color", "id": "swatch", "label": "Color", "default": "#0fa3a3" },
+        { "type": "checkbox", "id": "translucent", "label": "Translucent case", "default": true },
+        { "type": "image_picker", "id": "image_front", "label": "Front photo (optional)", "info": "Transparent PNG/WebP of the empty case. When set, photos replace the drawn preview." },
+        { "type": "image_picker", "id": "image_back", "label": "Back photo (optional)" }
+      ]
+    },
+    {
+      "type": "frame",
+      "name": "Frame and weight",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "info": "Must match the kit's second variant option, e.g. 'Silver Anodized'." },
+        { "type": "color", "id": "swatch", "label": "Color", "default": "#c4c6c9" }
+      ]
+    },
+    {
+      "type": "switch",
+      "name": "Switch",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Switch product" },
+        { "type": "text", "id": "name", "label": "Display name", "info": "Defaults to the product title." },
+        { "type": "checkbox", "id": "premade", "label": "Show as a quick pick", "default": false, "info": "Up to 4 quick picks. Others appear under 'Custom'." },
+        {
+          "type": "select", "id": "switch_type", "label": "Type", "default": "linear",
+          "options": [ { "value": "linear", "label": "Linear" }, { "value": "tactile", "label": "Tactile" }, { "value": "clicky", "label": "Clicky" }, { "value": "silent", "label": "Silent linear" }, { "value": "silent-tactile", "label": "Silent tactile" } ]
+        },
+        { "type": "text", "id": "note", "label": "Weight", "info": "e.g. '55 g'" },
+        { "type": "color", "id": "housing", "label": "Housing color", "default": "#2b2c30" },
+        { "type": "color", "id": "stem", "label": "Stem color", "default": "#d9c36a" }
+      ]
+    },
+    {
+      "type": "keycap",
+      "name": "Keycaps",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Rally Red" },
+        { "type": "checkbox", "id": "custom", "label": "This is the 'Custom' option", "default": false },
+        { "type": "product", "id": "product", "label": "Keycap product", "info": "Give it an 'ANSI' and an 'ISO FR' variant; the right one is picked from the layout. For Custom, use a service product or leave empty (quoted later)." },
+        { "type": "color", "id": "alpha", "label": "Alpha color", "default": "#a8262a", "info": "KAP Vella: Rally Red #a8262a, Harbor Blue #226a88, Phantom Black #2b2b2b, Clover Green #1d5e39. Use the same color for all three." },
+        { "type": "color", "id": "mod", "label": "Modifier color", "default": "#a8262a" },
+        { "type": "color", "id": "accent", "label": "Accent color (Esc, Enter)", "default": "#a8262a" },
+        { "type": "color", "id": "legend", "label": "Legend color", "default": "#f6f6f1" },
+        { "type": "image_picker", "id": "image_front", "label": "Keycap layer (optional)" },
+        { "type": "image_picker", "id": "image_ansi", "label": "Keycap layer, ANSI (optional)" },
+        { "type": "image_picker", "id": "image_iso", "label": "Keycap layer, ISO FR (optional)" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Pangea configurator" } ]
+}
+{% endschema %}

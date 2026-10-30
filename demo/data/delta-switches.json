@@ -1,0 +1,434 @@
+[
+{
+"name": "HMX Saru V2",
+"type": "tactile",
+"housing": "#f0d8cc",
+"stem": "#e65a3a",
+"price10": 3.9,
+"handle": "hmx-saru-v2-tactile-switches",
+"premade": false
+},
+{
+"name": "Sillyworks x HMX Sonja",
+"type": "linear",
+"housing": "#e04040",
+"stem": "#f0e6dc",
+"price10": 4.25,
+"handle": "sillyworks-x-hmx-sonja",
+"premade": false
+},
+{
+"name": "SW x Keygeek Shake",
+"type": "linear",
+"housing": "#a8a8ac",
+"stem": "#f2f2f2",
+"price10": 3.0,
+"handle": "sw-x-keygeek-shake",
+"premade": false
+},
+{
+"name": "Gateron Oil King Purple Silent",
+"type": "silent-tactile",
+"housing": "#1c1c1e",
+"stem": "#b98ae0",
+"price10": 6.9,
+"handle": "gateron-oil-king-purple",
+"premade": false
+},
+{
+"name": "Gateron Milky Purple Pro Silent",
+"type": "silent-tactile",
+"housing": "#efeadb",
+"stem": "#b98ae0",
+"price10": 3.4,
+"handle": "gateron-milky-purple-pro",
+"premade": true
+},
+{
+"name": "Gateron Milky Pink Pro Silent",
+"type": "silent",
+"housing": "#efeadb",
+"stem": "#f2b0c4",
+"price10": 3.4,
+"handle": "gateron-milky-pink-pro",
+"premade": true
+},
+{
+"name": "Gateron Smoothie Grape Silent",
+"type": "silent-tactile",
+"housing": "#b496d8",
+"stem": "#d2bff0",
+"price10": 4.9,
+"handle": "gateron-smoothie-grape",
+"premade": false
+},
+{
+"name": "Gateron Smoothie Banana",
+"type": "tactile",
+"housing": "#ece3c0",
+"stem": "#f6efd6",
+"price10": 3.9,
+"handle": "gateron-smoothie-banana",
+"premade": false
+},
+{
+"name": "Gateron Smoothie Strawberry",
+"type": "linear",
+"housing": "#e2c6c6",
+"stem": "#f0dcdc",
+"price10": 3.6,
+"handle": "gateron-smoothie-strawberry",
+"premade": false
+},
+{
+"name": "Gateron Smoothie White",
+"type": "linear",
+"housing": "#d9d4c8",
+"stem": "#efe9da",
+"price10": 3.7,
+"handle": "gateron-smoothie-white",
+"premade": false
+},
+{
+"name": "HMX Bruise",
+"type": "tactile",
+"housing": "#f2c4d8",
+"stem": "#eadfcc",
+"price10": 4.3,
+"handle": "hmx-bruise-tactile",
+"premade": false
+},
+{
+"name": "HMX Bleed",
+"type": "tactile",
+"housing": "#f06a50",
+"stem": "#eadfcc",
+"price10": 4.3,
+"handle": "hmx-bleed-tactile",
+"premade": false
+},
+{
+"name": "HMX Blue Star Silent",
+"type": "silent-tactile",
+"housing": "#f0f2f4",
+"stem": "#6fd0d0",
+"price10": 3.8,
+"handle": "hmx-blue-star",
+"premade": false
+},
+{
+"name": "HMX Egg Yolk",
+"type": "linear",
+"housing": "#f5b04a",
+"stem": "#d8d8d0",
+"price10": 4.2,
+"handle": "hmx-egg-yolk",
+"premade": false
+},
+{
+"name": "TTC Bluish White",
+"type": "tactile",
+"housing": "#c8eef2",
+"stem": "#b8e6ee",
+"price10": 5.9,
+"handle": "ttc-bluish-white",
+"premade": false
+},
+{
+"name": "TTC Bluish White V2 Silent",
+"type": "silent-tactile",
+"housing": "#c8eef2",
+"stem": "#b8e6ee",
+"price10": 5.9,
+"handle": "ttc-bluish-white-v2-silent",
+"premade": false
+},
+{
+"name": "TTC Frozen Silent V2",
+"type": "silent",
+"housing": "#f0f2f4",
+"stem": "#e6eaee",
+"price10": 5.9,
+"handle": "ttc-frozen-silent-v2-ttc-silent-glacier",
+"premade": false
+},
+{
+"name": "Wingtree Torrero Light",
+"type": "tactile",
+"housing": "#6a4a30",
+"stem": "#f2c020",
+"price10": 3.75,
+"handle": "wingtree-torrero-light-tactile-switch",
+"premade": false
+},
+{
+"name": "Keygeek T2",
+"type": "linear",
+"housing": "#7fd4d6",
+"stem": "#f2f2f2",
+"price10": 3.5,
+"handle": "keygeek-t2-linear-switch",
+"premade": false
+},
+{
+"name": "Keygeek Y3X",
+"type": "linear",
+"housing": "#ececec",
+"stem": "#2a2a2c",
+"price10": 2.9,
+"handle": "keygeek-y3x-linear-switch",
+"premade": true
+},
+{
+"name": "Keygeek Y3",
+"type": "linear",
+"housing": "#1c1c1e",
+"stem": "#e8dcb8",
+"price10": 2.9,
+"handle": "keygeek-y3-linear-switch",
+"premade": false
+},
+{
+"name": "HMX LongJing S",
+"type": "tactile",
+"housing": "#1c1c1e",
+"stem": "#a8e6c0",
+"price10": 4.35,
+"handle": "hmx-longjing-s-tactile-switches",
+"premade": false
+},
+{
+"name": "Wuque WS Big Lucky",
+"type": "linear",
+"housing": "#f2d8e0",
+"stem": "#e8f0c8",
+"price10": 5.0,
+"handle": "ws-big-lucky-linear-switches",
+"premade": false
+},
+{
+"name": "SW Kunzite Silent",
+"type": "silent",
+"housing": "#c8b8d8",
+"stem": "#e8dff0",
+"price10": 4.0,
+"handle": "sw-kunzite",
+"premade": false
+},
+{
+"name": "Gateron Chocolate Smoothie",
+"type": "tactile",
+"housing": "#8a6a55",
+"stem": "#d9cfc4",
+"price10": 3.95,
+"handle": "gateron-chocolate-smoothie-tactile-switches",
+"premade": false
+},
+{
+"name": "Gateron Mint Smoothie Silent",
+"type": "silent",
+"housing": "#9fe0cc",
+"stem": "#c9f0e4",
+"price10": 3.95,
+"handle": "gateron-mint-smoothie-linear-switches",
+"premade": false
+},
+{
+"name": "HMX Firecracker",
+"type": "tactile",
+"housing": "#f2f2f6",
+"stem": "#e02a3a",
+"price10": 4.3,
+"handle": "hmx-firecracker-tactile-switches",
+"premade": false
+},
+{
+"name": "Gateron Lanes",
+"type": "tactile",
+"housing": "#1d2340",
+"stem": "#c8b48a",
+"price10": 6.95,
+"handle": "gateron-lanes",
+"premade": false
+},
+{
+"name": "SW x Gateron Onyx",
+"type": "linear",
+"housing": "#222224",
+"stem": "#5a4a40",
+"price10": 7.5,
+"handle": "sw-x-gateron-onyx",
+"premade": false
+},
+{
+"name": "Sillyworks x HMX Sonja HC",
+"type": "linear",
+"housing": "#f0e6dc",
+"stem": "#d8282a",
+"price10": 4.25,
+"handle": "sillyworks-x-hmx-sonja-hc",
+"premade": false
+},
+{
+"name": "Sillyworks x Gateron Type R",
+"type": "tactile",
+"housing": "#c41e30",
+"stem": "#e04050",
+"price10": 6.0,
+"handle": "sillyworks-x-gateron-type-r-switches",
+"premade": false
+},
+{
+"name": "SW Cocoblack",
+"type": "linear",
+"housing": "#1c1c1e",
+"stem": "#2e2e30",
+"price10": 3.7,
+"handle": "sw-cocoblack-switches",
+"premade": false
+},
+{
+"name": "SWK Cheddar",
+"type": "linear",
+"housing": "#f6f2ea",
+"stem": "#f0a020",
+"price10": 4.0,
+"handle": "swk-cheddar-switches",
+"premade": false
+},
+{
+"name": "Keygeek Ash",
+"type": "linear",
+"housing": "#e8e6e2",
+"stem": "#6a5a50",
+"price10": 3.5,
+"handle": "keygeek-ash",
+"premade": false
+},
+{
+"name": "Gateron x Bowl L'Orange",
+"type": "linear",
+"housing": "#f0723a",
+"stem": "#ecd2b4",
+"price10": 5.0,
+"handle": "gateron-x-bowl-lorange-switches",
+"premade": false
+},
+{
+"name": "Geon Raw Zero",
+"type": "linear",
+"housing": "#eef0f2",
+"stem": "#dfe2e6",
+"price10": 5.5,
+"handle": "geon-raw-zero-switches",
+"premade": false
+},
+{
+"name": "Gazzew Boba LT RGB",
+"type": "linear",
+"housing": "#ddd0ee",
+"stem": "#6b3fb0",
+"price10": 6.5,
+"handle": "gazzew-boba-lt-rgb-55g",
+"premade": false
+},
+{
+"name": "SW x Haimu MP",
+"type": "tactile",
+"housing": "#1c1c1e",
+"stem": "#e8e8e8",
+"price10": 4.8,
+"handle": "sw-x-haimu-mp-tactile-switches",
+"premade": false
+},
+{
+"name": "Cherry MX2A Brown",
+"type": "tactile",
+"housing": "#1c1c1e",
+"stem": "#6b3a22",
+"price10": 3.5,
+"handle": "cherry-mx2a-brown",
+"premade": true
+},
+{
+"name": "Cherry MX2A Black",
+"type": "linear",
+"housing": "#1c1c1e",
+"stem": "#3a3a3d",
+"price10": 3.5,
+"handle": "cherry-mx2a-black",
+"premade": false
+},
+{
+"name": "Sillyworks Hyacinth",
+"type": "linear",
+"housing": "#a690e0",
+"stem": "#c8f0d0",
+"price10": 4.5,
+"handle": "sillyworks-hyacinth-switches",
+"premade": false
+},
+{
+"name": "Lichicx Raw Silent",
+"type": "silent-tactile",
+"housing": "#f2f2f0",
+"stem": "#e2e2dc",
+"price10": 6.5,
+"handle": "lichicx-raw-silent",
+"premade": false
+},
+{
+"name": "Gazzew U4T",
+"type": "tactile",
+"housing": "#f2efe8",
+"stem": "#f0a020",
+"price10": 6.5,
+"handle": "gazzew-u4t",
+"premade": false
+},
+{
+"name": "Gazzew Boba U4T",
+"type": "tactile",
+"housing": "#1c1c1e",
+"stem": "#f0a020",
+"price10": 6.5,
+"handle": "gazzew-boba-u4t",
+"premade": false
+},
+{
+"name": "Cherry MX2A Nixies",
+"type": "linear",
+"housing": "#e8e8ea",
+"stem": "#2a2a2c",
+"price10": 4.2,
+"handle": "cherry-mx2a-nixies-switches",
+"premade": false
+},
+{
+"name": "Gateron Baby Kangaroo 2.0",
+"type": "tactile",
+"housing": "#eef3ea",
+"stem": "#8fe0b0",
+"price10": 6.5,
+"handle": "gateron-baby-kangaroo-tactile-switches",
+"premade": false
+},
+{
+"name": "Gateron Oil King",
+"type": "linear",
+"housing": "#1c1c1e",
+"stem": "#3a3a3d",
+"price10": 6.2,
+"handle": "gateron-oil-king",
+"premade": false
+},
+{
+"name": "Gateron Milky Yellow Pro",
+"type": "linear",
+"housing": "#efeadb",
+"stem": "#f2c230",
+"price10": 3.7,
+"handle": "gateron-milky-yellow-pro",
+"premade": false
+}
+]
