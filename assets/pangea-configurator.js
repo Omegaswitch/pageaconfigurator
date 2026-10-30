@@ -248,16 +248,6 @@
           this.group('Layout', null, seg('lang', LANG, s.lang)) +
           this.group('Bottom Row', null, seg('row', ROW, s.row)) +
           this.group('Right Shift', null, seg('shift', SHIFT, s.shift)) +
-          '<div class="pc-summary" aria-live="polite">' +
-            '<ul class="pc-lines" data-lines></ul>' +
-            '<div class="pc-total"><span>Total</span><span data-total></span></div>' +
-            '<div class="pc-buy">' +
-              '<div class="pc-qty"><button type="button" data-qty="-1" aria-label="Decrease quantity">−</button><input type="number" min="1" value="1" data-qty-input aria-label="Quantity" inputmode="numeric"><button type="button" data-qty="1" aria-label="Increase quantity">+</button></div>' +
-              '<button type="submit" class="pc-add" data-add>Add to cart</button>' +
-            '</div>' +
-            '<p class="pc-error" data-error hidden></p>' +
-            '<button type="button" class="pc-share" data-share>Copy build link</button>' +
-          '</div>' +
         '</form>' +
         '<div class="pc-stage">' +
           '<div class="pc-canvas" data-canvas role="img" aria-label="Preview of your build"></div>' +
@@ -268,6 +258,17 @@
             '<div class="pc-modtoggle" data-modtoggle hidden><button type="button" data-mods="base" aria-pressed="false">Base mods</button><button type="button" data-mods="alt" aria-pressed="false">Alt mods</button></div>' +
             '<p class="pc-caption" data-caption></p>' +
           '</div>' +
+          '<div class="pc-summary" aria-live="polite">' +
+            '<ul class="pc-lines" data-lines></ul>' +
+            '<div class="pc-total"><span>Total</span><span data-total></span></div>' +
+            '<div class="pc-buy">' +
+              '<div class="pc-qty"><button type="button" data-qty="-1" aria-label="Decrease quantity">−</button><input type="number" min="1" value="1" data-qty-input aria-label="Quantity" inputmode="numeric"><button type="button" data-qty="1" aria-label="Increase quantity">+</button></div>' +
+              '<button type="button" class="pc-add" data-add>Add to cart</button>' +
+            '</div>' +
+            '<p class="pc-error" data-error hidden></p>' +
+            '<button type="button" class="pc-share" data-share>Copy build link</button>' +
+          '</div>' +
+
         '</div>' +
       '</div>';
     this.bind();
@@ -303,6 +304,7 @@
       if (v) { s.view = v.dataset.view; self.update(); return; }
       var q = e.target.closest('[data-qty]');
       if (q) { s.qty = Math.max(1, s.qty + Number(q.dataset.qty)); $('[data-qty-input]', r).value = s.qty; self.renderSummary(); return; }
+      if (e.target.closest('[data-add]')) { self.addToCart(); return; }
       if (e.target.closest('[data-share]')) self.copyLink(e.target.closest('[data-share]'));
       var mb = e.target.closest('[data-mods]');
       if (mb) { s.altMods = mb.dataset.mods === 'alt'; self.update(); return; }
