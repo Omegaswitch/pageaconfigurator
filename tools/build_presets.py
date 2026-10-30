@@ -40,12 +40,12 @@ GMK = [
      'lshift,fn': [DG,Y], 'lctrl,rsuper': [LG,PU], 'lsuper,ralt': [Y,PU], 'lalt': [DG,Y], 'rctrl': ['#4a287f',Y], 'rfn': [LG,PU]})),
  ('nerve2','GMK Nerve','gmk-icon', {}, build(['#e1e4e8',PU], ['#6f6f72',Y], space=['#dadee1',PU], esc=['#2a1a44',Y], enter=['#4a267f',Y])),
  ('taiga','GMK Taiga','cyrillic', {}, build(['#29615c',W], ['#22393a',W], space=['#24584f',W])),
- ('ramune2','GMK Ramune','kana', {'⇪ Caps': 'Caps'}, build(['#f6f6f9','#1d4fa0'], ['#c6e2fa','#3a6cc0'], space=['#f6f6f9',K], esc=['#3d73d0',W], enter=['#2b6aca',W])),
+ ('ramune2','GMK Ramune','kana', {}, build(['#f6f6f9','#1d4fa0'], ['#c6e2fa','#3a6cc0'], space=['#f6f6f9',K], esc=['#3d73d0',W], enter=['#2b6aca',W])),
  ('evild','GMK Evil Dolch','gmk-text', {}, build(['#4a4b4d',W], ['#252526','#b22a37'], space=['#3c3d3e',W], esc=['#2a1d24','#c4303c'])),
- ('finer','GMK Finer Things','gmk-text', {'↵ Enter': 'Return', '⇪ Caps': 'Caps'}, build(['#5ee2d7',W], ['#5ee2d7',W])),
- ('dualshot2','GMK Dualshot','gmk-text', {'◇\nSuper': 'Code'}, build(['#909195','#303133'], ['#a3a4a7','#4a4b4d'], space=['#3098d3','#303133'], esc=['#e8393d','#303133'], enter=['#32cbd3','#303133'], over={
+ ('finer','GMK Finer Things','gmk-plain', {'enter': {'text': 'Return'}}, build(['#5ee2d7',W], ['#5ee2d7',W])),
+ ('dualshot2','GMK Dualshot','gmk-text', {'super': {'text': 'Code'}}, build(['#909195','#303133'], ['#a3a4a7','#4a4b4d'], space=['#3098d3','#303133'], esc=['#e8393d','#303133'], enter=['#32cbd3','#303133'], over={
      'bksp': ['#e8393d','#303133'], 'tab,bslash': ['#ffc040','#303133'], 'caps': ['#32cbd3','#303133'], 'lshift,rshift,fn': ['#3098d3','#303133']})),
- ('crimson','GMK Crimson Cadet','gmk-text', {'↵ Enter': 'Return', '⇪ Caps': '⇩'}, build(['#d93737',W], ['#d43333',W])),
+ ('crimson','GMK Crimson Cadet','gmk-text', {'enter': {'text': 'Return'}, 'caps': {'icon': 'caps', 'text': '', 'at': 'mid'}}, build(['#d93737',W], ['#d43333',W])),
  ('stallion2','GMK Stallion','gmk-icon', {}, build(['#e7e3de','#a9a6a1'], ['#8d8a85',W], space=['#e4e0db','#a9a6a1'], esc=['#4f4c4b',W], enter=['#3f3c3a',W], over={
      'lctrl,rctrl': ['#5c5956',W], 'lsuper,rsuper': ['#c4c0ba','#4f4c4b']})),
  ('chladni','GMK Chladni','gmk-icon', {}, build(['#463033','#fff3d8'], ['#3f2a2d','#fff3d8'])),

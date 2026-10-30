@@ -64,23 +64,29 @@
     '{\n[': 'Х', '}\n]': 'Ъ', ':\n;': 'Ж', '"\n\'': 'Э', '<\n,': 'Б', '>\n.': 'Ю', '?\n/': ',\n.', '@\n2': '"\n2', '#\n3': '№\n3', '$\n4': ';\n4', '^\n6': ':\n6', '&\n7': '?\n7' };
   var KANA = { Q: 'た', W: 'て', E: 'い', R: 'す', T: 'か', Y: 'ん', U: 'な', I: 'に', O: 'ら', P: 'せ', A: 'ち', S: 'と', D: 'し', F: 'は', G: 'き', H: 'く', J: 'ま', K: 'の', L: 'り', Z: 'つ', X: 'さ', C: 'そ', V: 'ひ', B: 'こ', N: 'み', M: 'も',
     '!\n1': 'ぬ', '@\n2': 'ふ', '#\n3': 'あ', '$\n4': 'う', '%\n5': 'え', '^\n6': 'お', '&\n7': 'や', '*\n8': 'ゆ', '(\n9': 'よ', ')\n0': 'わ', '_\n-': 'ほ', '+\n=': 'へ', '{\n[': '゛', '}\n]': '゜', ':\n;': 'れ', '"\n\'': 'け', '<\n,': 'ね', '>\n.': 'る', '?\n/': 'め' };
-  var MODS = {
-    'gmk-text': { '⌫ Backspace': 'Backspace', '⇥ Tab': 'Tab', '⇪ Caps': 'Caps\nLock', '↵ Enter': 'Enter', '⇧ Shift': 'Shift', '⌃\nControl': 'Control', '◇\nSuper': 'Super', '⌥\nAlt': 'Alt', '☰\nFunc': 'Fn',
-      '⌫ Retour': 'Retour', '⇪ Verr. Maj': 'Verr.\nMaj', '↵ Entrée': 'Entrée', '⇧ Maj': 'Maj', '⌃\nCtrl': 'Ctrl', '⌥\nAlt Gr': 'Alt Gr', 'Échap': 'Échap' },
-    'gmk-icon': { '⌫ Backspace': '⟵', '⇥ Tab': '⇤\n⇥', '⇪ Caps': '⇩', '↵ Enter': '↵', '⇧ Shift': '⇧', '⌃\nControl': 'Control', '◇\nSuper': 'Code', '⌥\nAlt': 'Alt', '☰\nFunc': 'Fn',
-      '⌫ Retour': '⟵', '⇪ Verr. Maj': '⇩', '↵ Entrée': '↵', '⇧ Maj': '⇧', '⌃\nCtrl': 'Ctrl', '⌥\nAlt Gr': 'Alt Gr' },
-    'cyrillic': { 'Esc': 'Сбр', '⌫ Backspace': '⟵ Возврат', '⇥ Tab': 'Таб', '⇪ Caps': 'Прописн', '↵ Enter': '↵ Ввод', '⇧ Shift': '⇧ Регистр', '⌃\nControl': 'Управл', '◇\nSuper': 'Сист', '⌥\nAlt': 'Альт', '☰\nFunc': 'Слой' }
+  /* Modifier legends for GMK/SWG previews, the way Cherry-profile sets print them.
+     icon: bksp | tab | caps | enter | shift; text: word(s); at: 'top' (top-left), 'mid' (vertically centred), 'tab3' (Tab between arrows) */
+  var KEYID = { 'Esc': 'esc', 'Échap': 'esc', '⌫ Backspace': 'bksp', '⌫ Retour': 'bksp', '⇥ Tab': 'tab', '⇪ Caps': 'caps', '⇪ Verr. Maj': 'caps', '↵ Enter': 'enter', '↵ Entrée': 'enter',
+    '⇧ Shift': 'shift', '⇧ Maj': 'shift', '⌃\nControl': 'ctrl', '⌃\nCtrl': 'ctrl', '◇\nSuper': 'super', '⌥\nAlt': 'alt', '⌥\nAlt Gr': 'alt', '☰\nFunc': 'fn', '|\n\\': null };
+  var SPEC = {
+    'gmk-text': { esc: { text: 'Esc', at: 'top' }, bksp: { icon: 'bksp', text: 'Backspace' }, tab: { icon: 'tab', text: 'Tab', at: 'tab3' }, caps: { text: 'Caps\nLock', at: 'top' },
+      enter: { icon: 'enter', text: 'Enter' }, shift: { icon: 'shift', text: 'Shift' }, ctrl: { text: 'Control' }, super: { text: 'Super' }, alt: { text: 'Alt' }, fn: { text: 'Fn' } },
+    'gmk-icon': { esc: { text: 'Esc', at: 'top' }, bksp: { icon: 'bksp', big: true }, tab: { icon: 'tab' }, caps: { icon: 'caps' }, enter: { icon: 'enter', big: true }, shift: { icon: 'shift' },
+      ctrl: { text: 'Control' }, super: { text: 'Code' }, alt: { text: 'Alt' }, fn: { text: 'Fn' } },
+    'gmk-plain': { esc: { text: 'Esc', at: 'top' }, bksp: { text: 'Backspace' }, tab: { text: 'Tab' }, caps: { text: 'Caps' }, enter: { text: 'Enter' }, shift: { text: 'Shift' },
+      ctrl: { text: 'Control' }, super: { text: 'Super' }, alt: { text: 'Alt' }, fn: { text: 'Fn' } },
+    'cyrillic': { esc: { text: 'Сбр', at: 'top' }, bksp: { icon: 'bksp', text: 'Возврат' }, tab: { icon: 'tab', text: 'Таб', at: 'tab3' }, caps: { text: 'Прописн' },
+      enter: { icon: 'enter', text: 'Ввод' }, shift: { icon: 'shift', text: 'Регистр' }, ctrl: { text: 'Управл' }, super: { text: 'Сист' }, alt: { text: 'Альт' }, fn: { text: 'Слой' } }
   };
-  MODS.kana = MODS['gmk-text'];
+  SPEC.kana = SPEC['gmk-plain'];
   function restyle(rows, style, lang, sub, own, alien) {
     if (!style || style === 'vella') return rows;
-    var mods = Object.assign({}, MODS[style] || MODS['gmk-text'], own || {}), ru = style === 'cyrillic' && lang !== 'iso-fr', kana = style === 'kana' && lang !== 'iso-fr';
+    var spec = SPEC[style] || SPEC['gmk-text'], ru = style === 'cyrillic' && lang !== 'iso-fr', kana = style === 'kana' && lang !== 'iso-fr';
     return rows.map(function (row) {
       return row.map(function (k) {
         var n = Object.assign({}, k, { gmk: true });
         if (k.c === 'alpha') { if (alien && /^[A-Z]$/.test(k.l)) n.alien = true; if (ru && RU[k.l]) n.l = RU[k.l]; if (kana && KANA[k.l]) n.sub = KANA[k.l]; if (sub === 'cyrillic' && lang !== 'iso-fr' && RU[k.l] && RU[k.l].length === 1) n.sub = RU[k.l]; if (sub && typeof sub === 'object' && sub[k.l]) n.sub = sub[k.l]; }
-        else if (mods[k.l] != null) n.l = mods[k.l];
-        else if (style === 'cyrillic' && MODS['gmk-text'][k.l] != null) n.l = MODS['gmk-text'][k.l];
+        else { var id = KEYID[k.l]; if (id && spec[id]) n.spec = Object.assign({}, spec[id], (own || {})[id] || {}); }
         return n;
       });
     });
@@ -695,7 +701,37 @@
     if (!used[dot]) el('rect', { x: gx(dot) - 1.1, y: gy(dot) - 1.1, width: 2.2, height: 2.2, fill: fill }, g);
   };
 
+  // Cherry-style modifier icons, drawn as strokes so they stay crisp at any size
+  P.modIcon = function (g, icon, x, cy, fill, big) {
+    var st = { fill: 'none', stroke: fill, 'stroke-width': 1.25, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, P = function (d) { el('path', Object.assign({ d: d }, st), g); };
+    if (icon === 'bksp') { var L = big ? 16 : 8; P('M' + (x + L) + ',' + cy + ' H' + x + ' M' + (x + 3) + ',' + (cy - 2.6) + ' L' + x + ',' + cy + ' L' + (x + 3) + ',' + (cy + 2.6)); return L; }
+    if (icon === 'enter') { var E = big ? 22 : 10, hh = big ? 6 : 4; P('M' + (x + E) + ',' + (cy - hh) + ' V' + cy + ' H' + x + ' M' + (x + 3) + ',' + (cy - 2.6) + ' L' + x + ',' + cy + ' L' + (x + 3) + ',' + (cy + 2.6)); return E; }
+    if (icon === 'shift' || icon === 'caps') {
+      var w = 9, h = 9.5, s2 = 2, t = icon === 'shift' ? 1 : -1, y0 = cy - t * h / 2, y1 = cy + t * h / 2, ym = y0 + t * 4.5;
+      P('M' + (x + w / 2) + ',' + y0 + ' L' + (x + w) + ',' + ym + ' H' + (x + w / 2 + s2) + ' V' + y1 + ' H' + (x + w / 2 - s2) + ' V' + ym + ' H' + x + ' Z'); return w;
+    }
+    if (icon === 'tab') { // ⇤ over ⇥
+      var T = 11, a = cy - 4, b = cy + 4;
+      P('M' + (x + T) + ',' + a + ' H' + x + ' M' + x + ',' + (a - 2.6) + ' V' + (a + 2.6) + ' M' + (x + 3) + ',' + (a - 2.4) + ' L' + (x + 0.6) + ',' + a + ' L' + (x + 3) + ',' + (a + 2.4));
+      P('M' + x + ',' + b + ' H' + (x + T) + ' M' + (x + T) + ',' + (b - 2.6) + ' V' + (b + 2.6) + ' M' + (x + T - 3) + ',' + (b - 2.4) + ' L' + (x + T - 0.6) + ',' + b + ' L' + (x + T - 3) + ',' + (b + 2.4)); return T;
+    }
+    return 0;
+  };
+  P.modSpec = function (g, sp, x, y, fill) {
+    var tx = function (txt, ty, xx) { el('text', { x: xx == null ? x : xx, y: ty, fill: fill, 'class': 'pc-lg-gmk' }, g).textContent = txt; };
+    var cy = y + 19.5;
+    if (sp.at === 'tab3') { this.modIcon(g, 'tab', x, y + 15.5, fill); tx(sp.text, y + 22.5, x + 14.5); return; }
+    if (sp.at === 'top') { var lines = sp.text.split('\n'); lines.forEach(function (t, i) { tx(t, y + 14.5 + i * 10.5); }); return; }
+    if (sp.icon) {
+      var iw = this.modIcon(g, sp.icon, x, sp.icon === 'tab' ? y + 19 : cy, fill, sp.big);
+      if (sp.text) tx(sp.text, cy + 3.4, x + iw + 3.5);
+      return;
+    }
+    if (sp.text) sp.text.split('\n').forEach(function (t, i, all) { tx(t, cy + 3.4 - (all.length - 1) * 5.2 + i * 10.4); });
+  };
+
   P.legend = function (g, k, x, y, bg) {
+    if (k.spec) return this.modSpec(g, k.spec, x, y, this.ink(bg));
     if (k.alien) return this.alienGlyph(g, k.l, x + 1, y + 10, this.ink(bg));
     var parts = String(k.l).split('\n'), fill = this.ink(bg);
     var t = function (txt, ty, cls) { el('text', { x: x, y: ty, fill: fill, 'class': cls }, g).textContent = txt; };
