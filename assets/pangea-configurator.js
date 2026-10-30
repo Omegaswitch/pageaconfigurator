@@ -332,7 +332,11 @@
   };
 
   P.update = function () {
-    var s = this.state, r = this.root, cur = this.current();
+    var s = this.state, r = this.root, cur = this.current(), rf = this.cfg.renders && this.cfg.renders.files;
+    // with a known list of render files, Back is only offered for bodies that have a back render
+    var noBack = !!(rf && cur.kase && !rf['body-back-' + cur.kase.key]);
+    if (noBack && s.view === 'back') s.view = 'front';
+    $$('[data-view="back"]', r).forEach(function (b) { b.disabled = noBack; b.title = noBack ? 'No back render for this body yet' : ''; });
     $('[data-selection]', r).hidden = s.swMode !== 'custom';
     $('[data-custom-kc]', r).hidden = !(cur.kc && cur.kc.custom);
     $$('[data-view]', r).forEach(function (b) { var on = b.dataset.view === s.view; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });

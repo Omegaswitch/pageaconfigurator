@@ -122,7 +122,8 @@ input:checked + .pc-opt .pc-opt-tag { color: rgba(255,255,255,.75); }
 .pc-stage-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 0; }
 .pc-views { display: flex; gap: 6px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
 .pc-view { min-height: 34px; padding: 5px 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--pc-muted); cursor: pointer; }
-.pc-view:hover { color: var(--pc-ink); }
+.pc-view:hover:not(:disabled) { color: var(--pc-ink); }
+.pc-view:disabled { opacity: .4; cursor: not-allowed; }
 .pc-view.is-on { background: var(--pc-bg); color: var(--pc-ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .pc-modtoggle { display: flex; gap: 4px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
 .pc-modtoggle[hidden] { display: none; }

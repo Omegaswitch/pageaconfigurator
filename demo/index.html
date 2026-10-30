@@ -174,7 +174,8 @@ input:checked + .pc-opt .pc-opt-tag { color: rgba(255,255,255,.75); }
 .pc-stage-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 0; }
 .pc-views { display: flex; gap: 6px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
 .pc-view { min-height: 34px; padding: 5px 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--pc-muted); cursor: pointer; }
-.pc-view:hover { color: var(--pc-ink); }
+.pc-view:hover:not(:disabled) { color: var(--pc-ink); }
+.pc-view:disabled { opacity: .4; cursor: not-allowed; }
 .pc-view.is-on { background: var(--pc-bg); color: var(--pc-ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .pc-modtoggle { display: flex; gap: 4px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
 .pc-modtoggle[hidden] { display: none; }
@@ -593,7 +594,11 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
   };
 
   P.update = function () {
-    var s = this.state, r = this.root, cur = this.current();
+    var s = this.state, r = this.root, cur = this.current(), rf = this.cfg.renders && this.cfg.renders.files;
+    // with a known list of render files, Back is only offered for bodies that have a back render
+    var noBack = !!(rf && cur.kase && !rf['body-back-' + cur.kase.key]);
+    if (noBack && s.view === 'back') s.view = 'front';
+    $$('[data-view="back"]', r).forEach(function (b) { b.disabled = noBack; b.title = noBack ? 'No back render for this body yet' : ''; });
     $('[data-selection]', r).hidden = s.swMode !== 'custom';
     $('[data-custom-kc]', r).hidden = !(cur.kc && cur.kc.custom);
     $$('[data-view]', r).forEach(function (b) { var on = b.dataset.view === s.view; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
