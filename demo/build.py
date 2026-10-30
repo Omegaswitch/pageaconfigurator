@@ -41,7 +41,7 @@ keycaps = [kc("Rally Red", "#a8262a"), kc("Harbor Blue", "#226a88"),
 config = {
     "title": "Pangea Mini IM", "kitLabel": "Pangea Mini IM",
     "switchNote": "Switches come as a set of 70, lubed and installed.",
-    "currency": "EUR", "locale": "en-IE", "root": "/", "syncUrl": False, "demo": True, "showPresets": True,
+    "currency": "EUR", "locale": "en-IE", "root": "/", "syncUrl": False, "demo": True, "showPresets": True, "grain": 35,
     "shareBase": "https://your-store.com/products/pangea-mini-im",
     "customKeycapImage": None,
     "kit": {"title": "Pangea Mini IM", "variants": kit_variants},

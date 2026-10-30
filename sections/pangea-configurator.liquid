@@ -42,6 +42,7 @@
           "showPresets": {{ section.settings.show_presets }},
           "afterAdd": {{ section.settings.after_add | json }},
           "renders": {% if section.settings.render_base != blank %}{ "base": {{ section.settings.render_base | json }}, "ext": {{ section.settings.render_ext | json }} }{% else %}null{% endif %},
+          "grain": {{ section.settings.grain }},
           "customKeycapImage": {% if section.settings.custom_keycap_image != blank %}{{ section.settings.custom_keycap_image | image_url: width: 1200 | json }}{% else %}null{% endif %},
           "kit": {
             "title": {{ kit.title | json }},
@@ -113,8 +114,9 @@
     { "type": "text", "id": "title", "label": "Title", "default": "Pangea Mini IM" },
     { "type": "text", "id": "switch_note", "label": "Switch note", "default": "Switches come as a set of 70, lubed and installed." },
     { "type": "header", "content": "Pre-rendered images (optional)" },
-    { "type": "text", "id": "render_base", "label": "Render folder URL", "info": "Your Shopify Files URL ending in /files/. Files are named case-front-teal-silver-anodized.png, keycaps-ansi-625-split-rally-red.png and so on (see the setup guide). Missing files fall back to the drawing." },
+    { "type": "text", "id": "render_base", "label": "Render folder URL", "info": "Your Shopify Files URL ending in /files/. Four stacked layers: body-front-teal, frame-front-silver-anodized, switches-ansi-625-split-durock-t1, keycaps-ansi-625-split-rally-red (see the setup guide). Missing files fall back to the drawing." },
     { "type": "select", "id": "render_ext", "label": "Render file type", "default": ".png", "options": [ { "value": ".png", "label": "PNG" }, { "value": ".webp", "label": "WebP" } ] },
+    { "type": "range", "id": "grain", "label": "Preview grain", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 35, "info": "Fine film grain over the preview window. It does not change the brightness. 0 turns it off." },
     { "type": "checkbox", "id": "show_presets", "label": "Show 'Preview with famous sets' (GMK / SWG)", "default": true, "info": "Preview only. These sets are never added to the cart." },
     { "type": "image_picker", "id": "custom_keycap_image", "label": "Custom keycaps placeholder", "info": "Shown when a customer picks custom keycaps. Leave empty to show blank caps." },
     { "type": "header", "content": "Behaviour and look" },

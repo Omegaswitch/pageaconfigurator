@@ -54,19 +54,36 @@ Picking **Custom** under Keycaps opens a list of your **in-stock kits** (no free
 
 "Preview with famous sets" under Keycaps lets customers see the board in 20 GMK sets and 13 SWG sets. Each preview uses its set's own legend style (GMK word or symbol modifiers, Cyrillic for Taiga and Varanye, kana for Ramune) and colours. Sets that come with an alt mods kit (GMK Varanye, SWG Ferrofluid, SWG Nightshift) show a Base mods / Alt mods toggle under the preview; they open on alt mods. Previews are never added to the cart; the customer's real keycap choice stays in the order. Turn it off with **Show 'Preview with famous sets'** in the section settings. The colour data lives in `pangea-keycap-presets.js`.
 
-## Pre-rendered images (like the Constance configurator)
+## Pre-rendered images (layered renders)
 
-The drawing is the default. For photo-real renders, export transparent images from your 3D scene, **all at the same canvas size and camera** (e.g. 2400 × 1440), upload them to Content → Files, and paste the folder URL (ending in `/files/`) into **Render folder URL**. Files are named by option, lowercase with hyphens:
+The drawing is the default. For photo-real renders, upload transparent images to Content → Files and paste the folder URL (ending in `/files/`) into **Render folder URL**. The preview stacks four layers on top of each other, bottom to top:
 
-| Layer | File name | How many |
-|---|---|---|
-| Case (front / back) | `case-{front|back}-{body}-{frame}` | 7 bodies × 3 frames × 2 views = 42 |
-| Keycaps (front only) | `keycaps-{layout}-{bottom row}-{right shift}-{set}` | 8 layout combos × each set |
-| Switches (optional, shown before keycaps) | `switches-{layout}-{bottom row}-{right shift}-{switch}` | 8 × each switch |
+| # | Layer | File name | How many |
+|---|---|---|---|
+| 1 | Body (the Pangea plastic) | `body-front-{body}` | 7 |
+| 2 | Frame and back weight | `frame-front-{frame}` | 3 |
+| 3 | Switches in their positions | `switches-{layout}-{row}-{shift}-{switch}` | 8 per switch |
+| 4 | Keycaps | `keycaps-{layout}-{row}-{shift}-{set}` | 8 per set |
 
-Layout parts are `ansi` / `iso-fr`, `625` / `7`, `split` / `full`. Example: `case-front-teal-silver-anodized.png`, `keycaps-ansi-625-split-rally-red.png`, `switches-iso-fr-7-full-durock-t1.png`.
+Names are lowercase with hyphens, exactly like the option names: `body-front-teal.png`, `frame-front-silver-anodized.png`, `switches-ansi-625-split-keygeek-y3x.png`, `keycaps-iso-fr-7-full-rally-red.png`. Layout parts are `ansi` / `iso-fr`, `625` / `7`, `split` / `full` (8 combinations). The `{set}` can be a Vella colorway (`rally-red`), an in-stock custom kit or a famous-set preview by its set ID (`gmk-dolch`, alt mods: `gmk-varanye-alt`). For the Back view, add `body-back-{body}` and `frame-back-{frame}`.
 
-If a case render is missing for a combination, that view falls back to the drawing; a missing keycap or switch layer is simply left out. Adding a new keycap set is one block plus its 8 keycap renders.
+What the customer sees: the body as soon as it's picked, then the frame on top, then the switches, then the keycaps. Switching one option only swaps that one layer (it loads first, then fades in over the old one, so nothing flickers).
+
+Missing files: if the body, frame or keycap render for a combination is missing, the whole preview falls back to the drawing for that combination, so a set you haven't rendered yet still shows correctly. A missing switch render is simply left out (the keycaps cover it anyway).
+
+### Rendering them so they line up
+
+The layers are stacked with plain alpha (no blend modes, no opacity, no filters), so they never come out brighter than the render. For that to look right:
+
+- **One camera, one canvas.** Same camera position, height, focal length and output size (e.g. 2400 × 1440) for every file. Don't crop or trim them.
+- **Transparent background.** Blender: Render Properties → Film → Transparent (and *Transparent Glass* for the translucent bodies). Save as PNG, RGBA. WebP works too (pick it in **Render file type**).
+- **Same light and colour settings for all layers.** Same lights, exposure and view transform (AgX/Filmic/Standard) for every layer; don't adjust brightness per layer afterwards.
+- **One layer per file.** Render each layer with only its own parts visible. Keep the lower layers in the scene so their light and shadows land on the layer you render (e.g. set them to Holdout or turn off their Camera ray visibility), but hide the layers above it entirely. Then a switches-only preview has no keycap shadows on it.
+- **No background, floor or shadow catcher** in the layers. The preview window supplies the grey studio background.
+
+### Grain
+
+A fine film grain sits over the whole preview window (drawing and renders), so stacked renders read as one photo. It's grey noise centred on mid-grey in overlay mode, so it adds texture without changing the average brightness. Set the strength with **Preview grain** in the section settings (0 turns it off).
 
 ## What lands in the order
 

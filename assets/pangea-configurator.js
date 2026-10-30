@@ -102,6 +102,7 @@
   function Configurator(root, cfg) {
     this.root = root;
     this.cfg = cfg;
+    if (cfg.grain != null) root.style.setProperty('--pc-grain', cfg.grain / 100);
     this.uid = Math.random().toString(36).slice(2, 7);
     this.money = new Intl.NumberFormat(cfg.locale || 'en', { style: 'currency', currency: cfg.currency || 'EUR' });
     var blocks = cfg.blocks || [], kitVariants = (cfg.kit && cfg.kit.variants) || [];
@@ -350,11 +351,10 @@
   /* ----- preview ----- */
   P.renderStage = function () {
     var photo, s = this.state, cur = this.current(), box = $('[data-canvas]', this.root), cap = $('[data-caption]', this.root);
-    box.innerHTML = '';
     if (!cur.kase) cur = Object.assign({}, cur, { kase: { name: '', hex: '#fbfbfa', translucent: false, img: {}, ghost: true }, ghost: true });
     var layers = !cur.ghost && this.renderLayers(cur);
     if (layers) { this.showLayers(box, layers); }
-    else if ((photo = s.view === 'back' ? cur.kase.img.back : cur.kase.img.front)) {
+    else if ((box.innerHTML = '', photo = s.view === 'back' ? cur.kase.img.back : cur.kase.img.front)) {
       var wrap = document.createElement('div'); wrap.className = 'pc-layers';
       var add = function (src) { if (!src) return; var i = document.createElement('img'); i.src = src; i.alt = ''; i.decoding = 'async'; wrap.appendChild(i); };
       add(photo);
@@ -378,35 +378,68 @@
     cap.textContent = txt;
   };
 
-  /* Pre-rendered layers, the way the Constance configurator works: transparent PNG/WebP files of one size,
-     stacked, named by option. Any missing file is remembered and that layer falls back (case -> drawing). */
+  /* Pre-rendered layers: transparent PNG/WebP files, all from the same camera, height and canvas size,
+     stacked bottom to top with plain alpha (no blend modes, no opacity, no filters), so stacking never brightens:
+       1 body      body-{view}-{body}                          e.g. body-front-teal
+       2 frame     frame-{view}-{frame}                        e.g. frame-front-silver-anodized (frame and back weight)
+       3 switches  switches-{layout}-{row}-{shift}-{switch}    front only
+       4 keycaps   keycaps-{layout}-{row}-{shift}-{set}        front only
+     A missing body, frame or keycap file is remembered and the whole preview falls back to the drawing;
+     a missing switch layer is just left out. */
   P.renderLayers = function (cur) {
-    var r = this.cfg.renders, s = this.state;
-    if (!r || !r.base || !cur.frame) return null;
+    var r = this.cfg.renders, s = this.state, self = this;
+    if (!r || !r.base) return null;
     var name = function (n) { return r.base + n + (r.ext || '.png'); };
-    var lay = s.lang + '-' + s.row + '-' + s.shift;
-    var list = [{ key: 'case', src: name('case-' + s.view + '-' + cur.kase.key + '-' + cur.frame.key) }];
-    if (s.view === 'front') {
-      if (cur.kc) list.push({ key: 'caps', src: cur.kc.custom ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + cur.kc.key) });
-      else if (cur.sw) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
+    var lay = s.lang + '-' + s.row + '-' + s.shift, open = this.step() === 2;
+    var list = [{ key: 'body', src: name('body-' + s.view + '-' + cur.kase.key), need: true }];
+    if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
+    if (open && s.view === 'front') {
+      if (cur.sw) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
+      var caps = this.capsRender(cur);
+      if (caps) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' });
     }
-    this.missing = this.missing || {};
-    if (this.missing[list[0].src]) return null; // no case render for this combination: draw it instead
-    return list.filter(function (l) { return l.src; });
+    if (list.some(function (l) { return l.need && self.missing[l.src]; })) return null;
+    return list.filter(function (l) { return l.src && !self.missing[l.src]; });
   };
+  // which keycap render goes on top: a famous-set preview, the in-stock kit picked under Custom, or the colorway
+  P.capsRender = function (cur) {
+    var pre = this.state.preview && this.find(this.presetList, this.state.preview);
+    if (pre) return pre.key + (pre.altKeys && this.altOn(pre) ? '-alt' : '');
+    if (!cur.kc) return null;
+    if (!cur.kc.custom) return cur.kc.key;
+    return cur.cset ? cur.cset.key : 'placeholder';
+  };
+  // Keeps the stack in place between picks: unchanged layers stay, a changed layer loads first and then
+  // fades in over the old one (which stays fully opaque underneath until the fade is done).
   P.showLayers = function (box, list) {
-    var self = this, wrap = document.createElement('div');
-    wrap.className = 'pc-layers';
-    list.forEach(function (l) {
+    var self = this, wrap = box.firstChild;
+    if (!wrap || !wrap.classList || !wrap.classList.contains('pc-layers')) {
+      box.innerHTML = ''; wrap = document.createElement('div'); wrap.className = 'pc-layers'; box.appendChild(wrap);
+    }
+    var want = {}; list.forEach(function (l) { want[l.key] = l.src; });
+    this.shownLayer = want;
+    $$('img', wrap).forEach(function (img) { if (!(img.dataset.layer in want)) img.remove(); });
+    list.forEach(function (l, i) {
+      var have = $$('img[data-layer="' + l.key + '"]', wrap), top = have[have.length - 1];
+      if (top && top.dataset.src === l.src) { top.style.zIndex = i + 1; return; }
       var img = document.createElement('img');
-      img.alt = ''; img.decoding = 'async'; img.dataset.layer = l.key;
-      img.onerror = function () { self.missing[l.src] = true; if (l.key === 'case') self.renderStage(); else img.remove(); };
-      if (self.shownLayer && self.shownLayer[l.key] !== l.src) img.className = 'pc-pop';
+      img.alt = ''; img.decoding = 'async'; img.dataset.layer = l.key; img.dataset.src = l.src;
+      img.className = 'pc-loading'; img.style.zIndex = i + 1;
+      var settle = function () { have.forEach(function (o) { o.remove(); }); img.classList.remove('pc-pop'); };
+      img.onload = function () {
+        if (self.shownLayer[l.key] !== l.src) { img.remove(); return; }
+        img.className = 'pc-pop';
+        img.addEventListener('animationend', settle, { once: true });
+        setTimeout(settle, 600); // no animation with reduced motion
+      };
+      img.onerror = function () {
+        img.remove(); self.missing[l.src] = true;
+        if (self.shownLayer[l.key] === l.src) have.forEach(function (o) { o.remove(); });
+        if (l.need && self.shownLayer[l.key] === l.src) self.renderStage();
+      };
       img.src = l.src;
       wrap.appendChild(img);
     });
-    this.shownLayer = {}; list.forEach(function (l) { self.shownLayer[l.key] = l.src; });
-    box.appendChild(wrap);
   };
 
   /* path helpers: rounded polygon corners and smooth curves through points */

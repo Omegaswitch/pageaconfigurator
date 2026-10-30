@@ -98,7 +98,11 @@ input:checked + .pc-opt .pc-opt-tag { color: rgba(255,255,255,.75); }
 
 /* right: preview */
 .pc-stage { position: sticky; top: 20px; display: grid; min-width: 0; }
-.pc-canvas { aspect-ratio: 1 / 0.6; display: grid; place-items: center; padding: 6% 5%; border-radius: var(--pc-radius); background: radial-gradient(120% 90% at 50% 38%, #e6e6e5 0%, #d2d2d1 55%, #bfbfbe 100%); overflow: hidden; }
+.pc-canvas { aspect-ratio: 1 / 0.6; display: grid; place-items: center; padding: 6% 5%; border-radius: var(--pc-radius); background: radial-gradient(120% 90% at 50% 38%, #e6e6e5 0%, #d2d2d1 55%, #bfbfbe 100%); overflow: hidden; position: relative; isolation: isolate; }
+/* film grain over the whole preview: grey noise centred on 50% (sRGB) in overlay mode, so it adds texture
+   without lifting or dropping the average brightness. Strength: --pc-grain (section setting "Preview grain"). */
+.pc-canvas::after { content: ""; position: absolute; inset: 0; z-index: 10; pointer-events: none; opacity: var(--pc-grain, .35); mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .pc-svg { width: 100%; height: auto; display: block; }
 .pc-lg-alpha, .pc-lg-pair, .pc-lg-mod, .pc-lg-icon, .pc-unit { font-family: var(--pc-key-font); }
 .pc-lg-alpha { font-size: 16.5px; font-weight: 600; }
@@ -111,7 +115,8 @@ input:checked + .pc-opt .pc-opt-tag { color: rgba(255,255,255,.75); }
 .pc-lg-glyph { font-family: var(--pc-key-font); font-size: 14px; }
 .pc-unit { font-size: 6px; font-weight: 700; letter-spacing: .02em; }
 .pc-layers { position: relative; width: 100%; height: 100%; }
-.pc-layers img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.pc-layers img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: normal; }
+.pc-layers img.pc-loading { visibility: hidden; }
 .pc-stage-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 0; }
 .pc-views { display: flex; gap: 6px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
 .pc-view { min-height: 34px; padding: 5px 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--pc-muted); cursor: pointer; }
