@@ -108,6 +108,7 @@ Every choice is in the page URL (`?body=…&frame=…&switch=…&keycaps=…&lay
 | `sections/`, `assets/` | The Shopify theme files (copy these into the theme) |
 | `demo/index.html` | Self-contained preview page (open it in a browser) |
 | `demo/template.html`, `demo/build.py` | Demo page source; `python3 demo/build.py` inlines the assets and example data into `demo/index.html` |
+| `python3 demo/build.py RENDER_DIR OUT.html` | Same demo with your layer renders from `RENDER_DIR` (named as above) built into the page |
 | `demo/data/delta-switches.json` | Example switch list (Delta Keyco MX-compatible range, colours read from product photos) |
 | `tools/build_presets.py` | Source for the famous keycap sets; `python3 tools/build_presets.py` regenerates `assets/pangea-keycap-presets.js` |
 
