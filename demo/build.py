@@ -35,7 +35,7 @@ def kc(name, base):
                          {"id": vid(), "title": "ISO FR", "price": 3900, "available": True}], "img": {}}
 
 keycaps = [kc("Rally Red", "#a8262a"), kc("Harbor Blue", "#226a88"),
-           kc("Phantom Black", "#2b2b2b"), kc("Clover Green", "#1d5e39"),
+           kc("Phantom Black", "#2b2b2b"), kc("Clover Green", "#1d5e39"), kc("Grey", "#a2a2a2"),
            {"type": "keycap", "name": "Custom", "custom": True, "alpha": "#dcdcd6", "mod": "#cfcfc8", "accent": "#cfcfc8", "variants": [], "img": {}}]
 
 config = {

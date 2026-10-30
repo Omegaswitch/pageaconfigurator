@@ -127,7 +127,7 @@
     this.state = {
       kase: null, frame: this.frames.length ? null : 'none', sw: null, swMode: 'premade',
       kc: null,
-      lang: 'ansi', row: '625', shift: 'split', view: 'front', qty: 1, preview: null, customSet: null
+      lang: (cfg.layout || {}).lang || 'ansi', row: (cfg.layout || {}).row || '625', shift: (cfg.layout || {}).shift || 'split', view: 'front', qty: 1, preview: null, customSet: null
     };
     this.presetList = this.presets().map(function (p) { return Object.assign({ key: p.id }, p); });
     var stock = {}; (cfg.blocks || []).filter(function (b) { return b.type === 'stock_kit' && b.preset; }).forEach(function (b) { stock[b.preset] = b.variant || null; });
@@ -402,7 +402,9 @@
     if (open && s.view === 'front') {
       if (cur.sw && use('switches')) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
       var caps = this.capsRender(cur);
-      if (caps && use('keycaps')) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' });
+      // renders.optional: layers left out when their file is missing, instead of falling back to the drawing
+      var optional = (r.optional || []).indexOf('keycaps') >= 0;
+      if (caps && use('keycaps')) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' && !optional });
     }
     if (list.some(function (l) { return l.need && (!l.src || self.missing[l.src]); })) return null;
     return list.filter(function (l) { return l.src && !self.missing[l.src]; });
