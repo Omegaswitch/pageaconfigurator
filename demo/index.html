@@ -646,7 +646,8 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
        3 switches  switches-{layout}-{row}-{shift}-{switch}    front only
        4 keycaps   keycaps-{layout}-{row}-{shift}-{set}        front only
      A missing body, frame or keycap file is remembered and the whole preview falls back to the drawing;
-     a missing switch layer is just left out. */
+     a missing switch layer is just left out. renders.layers (optional) lists the layers to stack; the others are
+     still picked and ordered but not shown. */
   P.renderLayers = function (cur) {
     var r = this.cfg.renders, s = this.state, self = this;
     if (!r || !(r.base || r.files)) return null;
@@ -654,10 +655,11 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
     var lay = s.lang + '-' + s.row + '-' + s.shift, open = this.step() === 2;
     var list = [{ key: 'body', src: name('body-' + s.view + '-' + cur.kase.key), need: true }];
     if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
+    var use = function (k) { return !r.layers || r.layers.indexOf(k) >= 0; }; // renders.layers limits the stack, e.g. ['body', 'frame']
     if (open && s.view === 'front') {
-      if (cur.sw) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
+      if (cur.sw && use('switches')) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
       var caps = this.capsRender(cur);
-      if (caps) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' });
+      if (caps && use('keycaps')) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' });
     }
     if (list.some(function (l) { return l.need && (!l.src || self.missing[l.src]); })) return null;
     return list.filter(function (l) { return l.src && !self.missing[l.src]; });

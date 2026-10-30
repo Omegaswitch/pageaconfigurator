@@ -71,6 +71,8 @@ What the customer sees: the body as soon as it's picked, then the frame on top, 
 
 Renders fill the preview box edge to edge, and the box takes the shape of your body render, so a floor baked into the body files becomes the background.
 
+Not ready with switch and keycap renders yet? Untick **Show switch and keycap renders**: the preview then shows only the body and frame renders, and customers can still pick switches and keycaps.
+
 Missing files: if the body, frame or keycap render for a combination is missing, the whole preview falls back to the drawing for that combination, so a set you haven't rendered yet still shows correctly. A missing switch render is simply left out (the keycaps cover it anyway).
 
 ### Rendering them so they line up
