@@ -48,7 +48,7 @@ If you have renders, add them as transparent PNG/WebP layers of the same size: c
 
 ## Famous keycap sets (preview only)
 
-"Preview with famous sets" under Keycaps lets customers see the board in 20 GMK sets and 13 SWG sets. Each preview uses its set's own legend style (GMK word or symbol modifiers, Cyrillic for Taiga and Varanye, kana for Ramune) and colours. Previews are never added to the cart; the customer's real keycap choice stays in the order. Turn it off with **Show 'Preview with famous sets'** in the section settings. The colour data lives in `pangea-keycap-presets.js`.
+"Preview with famous sets" under Keycaps lets customers see the board in 20 GMK sets and 13 SWG sets. Each preview uses its set's own legend style (GMK word or symbol modifiers, Cyrillic for Taiga and Varanye, kana for Ramune) and colours. Sets that come with an alt mods kit (GMK Varanye, SWG Ferrofluid, SWG Nightshift) show a Base mods / Alt mods toggle under the preview; they open on alt mods. Previews are never added to the cart; the customer's real keycap choice stays in the order. Turn it off with **Show 'Preview with famous sets'** in the section settings. The colour data lives in `pangea-keycap-presets.js`.
 
 ## Pre-rendered images (like the Constance configurator)
 

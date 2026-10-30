@@ -112,6 +112,11 @@ input:disabled + .pc-opt { cursor: not-allowed; }
 .pc-view { min-height: 34px; padding: 5px 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--pc-muted); cursor: pointer; }
 .pc-view:hover { color: var(--pc-ink); }
 .pc-view.is-on { background: var(--pc-bg); color: var(--pc-ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.pc-modtoggle { display: flex; gap: 4px; padding: 4px; background: var(--pc-soft); border-radius: 999px; }
+.pc-modtoggle[hidden] { display: none; }
+.pc-modtoggle button { min-height: 34px; padding: 5px 14px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--pc-muted); cursor: pointer; }
+.pc-modtoggle button.is-on { background: var(--pc-bg); color: var(--pc-ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.pc-modtoggle button:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 2px; }
 .pc-caption { margin: 0; font-family: var(--pc-mono); font-size: 12px; color: var(--pc-muted); text-align: right; }
 
 @media (max-width: 900px) {

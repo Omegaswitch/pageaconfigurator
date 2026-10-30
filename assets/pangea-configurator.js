@@ -132,10 +132,11 @@
   // colour [cap, legend] of one key in a famous-set preview: per-key samples (GMK) or roles (SWG)
   P.presetColor = function (pre, key, ri, cx) {
     if (pre.keys) {
-      var row = pre.keys[Math.min(ri, pre.keys.length - 1)], best = row[0], bd = 1e9, x = 0;
+      var keys = pre.altKeys && this.altOn(pre) ? pre.altKeys : pre.keys;
+      var row = keys[Math.min(ri, keys.length - 1)], best = row[0], bd = 1e9, x = 0;
       var widths = [[1,1,1,1,1,1,1,1,1,1,1,1,1,2], [1.5,1,1,1,1,1,1,1,1,1,1,1,1,1.5], [1.75,1,1,1,1,1,1,1,1,1,1,1,2.25], [2.25,1,1,1,1,1,1,1,1,1,1,1.75,1], pre.w4 || [1.5,1,1.5,7,1.5,1,1.5]][Math.min(ri, 4)];
       widths.forEach(function (w, i) { var c = x + w / 2, dd = Math.abs(c - cx) + (Math.abs(w - key.w) < 0.3 ? 0 : 0.35); if (dd < bd && row[i]) { bd = dd; best = row[i]; } x += w; });
-      if (key.c === 'isoenter') best = pre.keys[2][pre.keys[2].length - 1];
+      if (key.c === 'isoenter') best = keys[2][keys[2].length - 1];
       return best;
     }
     var r = pre.roles, label = String(key.l);
@@ -144,6 +145,7 @@
     if (key.c === 'isoenter' || /Enter|Entrée/.test(label)) return r.enter;
     return key.c === 'alpha' ? r.alpha : r.mod;
   };
+  P.altOn = function (pre) { var a = this.state.altMods; return a == null ? !!pre.altDefault : a; };
   P.presets = function () { return (this.cfg.showPresets === false ? [] : (window.PangeaPresets || [])); };
 
   P.find = function (list, key) { return list.filter(function (o) { return o.key === key; })[0]; };
@@ -257,6 +259,7 @@
             '<div class="pc-views">' +
               ['front', 'back'].map(function (v) { return '<button type="button" class="pc-view" data-view="' + v + '" aria-pressed="false">' + v.charAt(0).toUpperCase() + v.slice(1) + '</button>'; }).join('') +
             '</div>' +
+            '<div class="pc-modtoggle" data-modtoggle hidden><button type="button" data-mods="base" aria-pressed="false">Base mods</button><button type="button" data-mods="alt" aria-pressed="false">Alt mods</button></div>' +
             '<p class="pc-caption" data-caption></p>' +
           '</div>' +
         '</div>' +
@@ -278,7 +281,7 @@
       }
       if (g === 'swc') { s.swMode = 'custom'; s.sw = t.value; var cu = $('input[data-group="sw"][value="__custom"]', r); if (cu) cu.checked = true; }
       if (g === 'kc') { s.kc = t.value; s.preview = null; $$('input[data-group="pre"]', r).forEach(function (i) { i.checked = false; }); }
-      if (g === 'pre') { s.preview = t.value; $$('input[data-group="kc"]', r).forEach(function (i) { i.checked = false; }); }
+      if (g === 'pre') { s.preview = t.value; s.altMods = null; $$('input[data-group="kc"]', r).forEach(function (i) { i.checked = false; }); }
       if (g === 'lang') s.lang = t.value;
       if (g === 'row') s.row = t.value;
       if (g === 'shift') s.shift = t.value;
@@ -295,6 +298,8 @@
       var q = e.target.closest('[data-qty]');
       if (q) { s.qty = Math.max(1, s.qty + Number(q.dataset.qty)); $('[data-qty-input]', r).value = s.qty; self.renderSummary(); return; }
       if (e.target.closest('[data-share]')) self.copyLink(e.target.closest('[data-share]'));
+      var mb = e.target.closest('[data-mods]');
+      if (mb) { s.altMods = mb.dataset.mods === 'alt'; self.update(); return; }
       var ft = e.target.closest('[data-famous]');
       if (ft) { var pn = $('[data-famous-panel]', r), open = pn.hidden; pn.hidden = !open; ft.setAttribute('aria-expanded', open); return; }
       if (e.target.closest('[data-clear-preview]')) { s.preview = null; $$('input[data-group="pre"]', r).forEach(function (i) { i.checked = false; }); $$('input[data-group="kc"]', r).forEach(function (i) { i.checked = i.value === s.kc; }); self.update(); }
@@ -343,11 +348,14 @@
       box.appendChild(s.view === 'back' ? this.drawBack(cur) : this.drawFront(cur));
       if (s.view === 'front') this.seen = this.nextSeen;
     }
+    var mt = $('[data-modtoggle]', this.root), pv = !cur.ghost && s.view === 'front' && s.preview ? this.find(this.presetList, s.preview) : null, self = this;
+    mt.hidden = !(pv && pv.altKeys);
+    if (pv && pv.altKeys) $$('[data-mods]', mt).forEach(function (b) { var on = (b.dataset.mods === 'alt') === self.altOn(pv); b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     if (cur.ghost) { cap.textContent = 'Pick a body to start'; return; }
     var txt = s.view === 'back' ? cur.kase.name + ' body, ' + (cur.frame ? cur.frame.name.toLowerCase() : 'frame not picked') + ' weight'
       : !cur.frame ? cur.kase.name + ' body / pick a frame'
       : !cur.sw ? cur.kase.name + ' / ' + cur.frame.name + ' / pick switches'
-      : s.preview && this.find(this.presetList, s.preview) ? 'Preview: ' + this.find(this.presetList, s.preview).name + ' (not included) / ' + (s.lang === 'iso-fr' ? 'ISO' : 'ANSI')
+      : s.preview && this.find(this.presetList, s.preview) ? 'Preview: ' + this.find(this.presetList, s.preview).name + (this.find(this.presetList, s.preview).altKeys ? (this.altOn(this.find(this.presetList, s.preview)) ? ', alt mods' : ', base mods') : '') + ' (not included) / ' + (s.lang === 'iso-fr' ? 'ISO' : 'ANSI')
       : !cur.kc ? cur.sw.name + ' installed / pick keycaps'
       : [LONG[s.lang], LONG[s.row], LONG[s.shift]].join(' / ') + (cur.kc.custom ? ' / custom keycaps shown blank' : '');
     cap.textContent = txt;

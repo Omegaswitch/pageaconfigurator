@@ -80,6 +80,12 @@ SWG = [
  ('skeletoon','SWG Skeletoon','gmk-text', {}, build(['#59554f',W], ['#3f3c39',W])),
  ('beige','SWG Beige','gmk-text', {}, build(['#f0ece3','#2c2c2c'], ['#b7b2a4','#2c2c2c'])),
 ]
+# Sets that also come with an alt mods kit: base build (keys) plus alt build (altKeys); previews open on alt.
+ALT_BASE = {
+ 'gmk-varanye': build(['#6b2e37',W], ['#3b3031',W], space=['#68293a',W]),
+ 'swg-ferrofluid': build(['#c4c4c6','#4636c8'], ['#66666b',W], esc=['#3b2be0',W], enter=['#e23ccf',W]),
+ 'swg-nightshift': build(['#2b2e33','#e4f22a'], ['#a4a6a8','#2b2b2b'], space=['#2b2e33','#e4f22a'], esc=['#e4f22a','#2b2b2b'], enter=['#e4f22a','#2b2b2b']),
+}
 presets = []
 for i, n, st, mods, keys in GMK:
     p = {'id': 'gmk-' + i, 'name': n, 'brand': 'GMK', 'legends': st, 'keys': keys, 'w4': W4}
@@ -92,6 +98,9 @@ for i, n, st, mods, keys in SWG:
     if i == 'nightshift': p['alien'] = True
     if i == 'crimson-cadet' or i == 'space-cadet' or i == 'forest-cadet': p['subs'] = CADET
     presets.append(p)
+for p in presets:
+    if p['id'] in ALT_BASE:
+        p['altKeys'] = p['keys']; p['keys'] = ALT_BASE[p['id']]; p['altDefault'] = True
 HEAD = ("/* Famous keycap sets for the preview-only picker in the Pangea configurator.\n"
         " * Each set: cap and legend colour per key for ANSI 60% / split shift / 6.25U (keys), defined by role\n"
         " * (alphas, modifiers, Esc, Enter, spacebar) with per-key overrides, checked against top-down renders.\n"
