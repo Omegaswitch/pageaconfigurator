@@ -166,7 +166,8 @@ input:checked + .pc-opt .pc-opt-tag { color: rgba(255,255,255,.75); }
 .pc-lg-sub { font-family: var(--pc-key-font); font-size: 13px; font-weight: 800; }
 .pc-lg-glyph { font-family: var(--pc-key-font); font-size: 14px; }
 .pc-unit { font-size: 6px; font-weight: 700; letter-spacing: .02em; }
-.pc-layers { position: relative; width: 100%; height: 100%; }
+.pc-layers { position: relative; width: 100%; height: 100%; isolation: isolate; }
+.pc-layers.is-next { position: absolute; inset: 0; }
 .pc-layers img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: normal; }
 .pc-layers img.pc-loading { visibility: hidden; }
 .pc-canvas.is-render { padding: 0; background: #cfcfcf; }
@@ -679,10 +680,15 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
   };
   // Keeps the stack in place between picks: unchanged layers stay, a changed layer loads first and then
   // fades in over the old one (which stays fully opaque underneath until the fade is done).
+  // A new camera (front <-> back) swaps the whole stack instead: the new stack builds on top of the old one,
+  // which goes once the new body has faded in, so a front layer never shows over a back render.
   P.showLayers = function (box, list) {
-    var self = this, wrap = box.firstChild;
-    if (!wrap || !wrap.classList || !wrap.classList.contains('pc-layers')) {
-      box.innerHTML = ''; wrap = document.createElement('div'); wrap.className = 'pc-layers'; box.appendChild(wrap);
+    var self = this, view = this.state.view, stacks = $$('.pc-layers', box), wrap = stacks[stacks.length - 1], old = null;
+    if (!wrap || !box.classList.contains('is-render')) { box.innerHTML = ''; wrap = null; }
+    else { stacks.slice(0, -1).forEach(function (w) { w.remove(); }); }
+    if (wrap && wrap.dataset.view !== view) { old = wrap; wrap = null; }
+    if (!wrap) {
+      wrap = document.createElement('div'); wrap.className = 'pc-layers' + (old ? ' is-next' : ''); wrap.dataset.view = view; box.appendChild(wrap);
     }
     box.classList.add('is-render'); // renders fill the box edge to edge; their own floor is the background
     var want = {}; list.forEach(function (l) { want[l.key] = l.src; });
@@ -694,7 +700,10 @@ window.PangeaPresets = [{"id":"gmk-wob3","name":"GMK WoB","brand":"GMK","legends
       var img = document.createElement('img');
       img.alt = ''; img.decoding = 'async'; img.dataset.layer = l.key; img.dataset.src = l.src;
       img.className = 'pc-loading'; img.style.zIndex = i + 1;
-      var settle = function () { have.forEach(function (o) { o.remove(); }); img.classList.remove('pc-pop'); };
+      var settle = function () {
+        have.forEach(function (o) { o.remove(); }); img.classList.remove('pc-pop');
+        if (old && l.key === 'body') { old.remove(); wrap.classList.remove('is-next'); }
+      };
       img.onload = function () {
         if (self.shownLayer[l.key] !== l.src) { img.remove(); return; }
         img.className = 'pc-pop';
