@@ -61,6 +61,7 @@ The drawing is the default. For photo-real renders, upload transparent images to
 | # | Layer | File name | How many |
 |---|---|---|---|
 | 1 | Body (the Pangea plastic) | `body-front-{body}` | 7 |
+| 1b | Midpiece (PCB and gaskets, same in every build) | `mid-front` | 1 (optional) |
 | 2 | Frame and back weight | `frame-front-{frame}` | 3 |
 | 3 | Switches in their positions | `switches-{layout}-{row}-{shift}-{switch}` | 8 per switch |
 | 4 | Keycaps | `keycaps-{layout}-{row}-{shift}-{set}` | 8 per set |

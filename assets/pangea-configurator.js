@@ -385,6 +385,7 @@
   /* Pre-rendered layers: transparent PNG/WebP files, all from the same camera, height and canvas size,
      stacked bottom to top with plain alpha (no blend modes, no opacity, no filters), so stacking never brightens:
        1 body      body-{view}-{body}                          e.g. body-front-teal
+     1b mid       mid-{view}                                  PCB and gaskets between body and frame (optional)
        2 frame     frame-{view}-{frame}                        e.g. frame-front-silver-anodized (frame and back weight)
        3 switches  switches-{layout}-{row}-{shift}-{switch}    front only
        4 keycaps   keycaps-{layout}-{row}-{shift}-{set}        front only
@@ -397,8 +398,9 @@
     var name = function (n) { return r.files ? r.files[n] : r.base + n + (r.ext || '.png'); };
     var lay = s.lang + '-' + s.row + '-' + s.shift, open = this.step() === 2;
     var list = [{ key: 'body', src: name('body-' + s.view + '-' + cur.kase.key), need: true }];
-    if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
     var use = function (k) { return !r.layers || r.layers.indexOf(k) >= 0; }; // renders.layers limits the stack, e.g. ['body', 'frame']
+    if (use('mid')) list.push({ key: 'mid', src: name('mid-' + s.view) }); // PCB and gaskets, the same in every build; optional
+    if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
     if (open && s.view === 'front') {
       if (cur.sw && use('switches')) list.push({ key: 'switches', src: name('switches-' + lay + '-' + cur.sw.key) });
       var caps = this.capsRender(cur);
