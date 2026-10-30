@@ -21,6 +21,8 @@
 .pc, .pc * { box-sizing: border-box; }
 .pc { display: grid; grid-template-columns: minmax(330px, 0.8fr) minmax(0, 1.2fr); gap: 44px; align-items: start; }
 .pc-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* hidden radios sit fixed in the viewport: focusing one (by clicking its label) never scrolls the page */
+.pc input.pc-sr { position: fixed; top: 0; left: 0; }
 
 /* left: options */
 .pc-panel { display: grid; gap: 28px; min-width: 0; }
