@@ -63,11 +63,23 @@ for k in keycaps:
     prices.update({v["id"]: v["price"] for v in k["variants"]})
 prices[config["assembly"]["id"]] = 4500
 
+# optional: python3 demo/build.py RENDER_DIR [OUT] embeds layer renders (body-front-teal.webp, ...) into the page
+import sys, base64, mimetypes
+out = ROOT / "demo/index.html"
+if len(sys.argv) > 1:
+    files = {}
+    for f in sorted(pathlib.Path(sys.argv[1]).iterdir()):
+        if f.suffix.lower() in (".png", ".webp", ".jpg", ".jpeg"):
+            files[f.stem] = "data:" + mimetypes.guess_type(f.name)[0] + ";base64," + base64.b64encode(f.read_bytes()).decode()
+    config["renders"] = {"files": files}
+    if len(sys.argv) > 2:
+        out = pathlib.Path(sys.argv[2])
+
 html = (ROOT / "demo/template.html").read_text(encoding="utf-8")
 html = (html.replace("/*__CSS__*/", css)
             .replace("/*__JS__*/", presets_js + "\n" + js)
             .replace("__CONFIG__", json.dumps(config, ensure_ascii=False).replace("</", "<\\/"))
             .replace("__NAMES__", json.dumps({str(k): v for k, v in names.items()}, ensure_ascii=False))
             .replace("__PRICES__", json.dumps({str(k): v for k, v in prices.items()})))
-(ROOT / "demo/index.html").write_text(html, encoding="utf-8")
-print("wrote", ROOT / "demo/index.html", len(html), "bytes")
+out.write_text(html, encoding="utf-8")
+print("wrote", out, len(html), "bytes")

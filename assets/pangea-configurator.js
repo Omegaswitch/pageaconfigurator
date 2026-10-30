@@ -354,7 +354,7 @@
     if (!cur.kase) cur = Object.assign({}, cur, { kase: { name: '', hex: '#fbfbfa', translucent: false, img: {}, ghost: true }, ghost: true });
     var layers = !cur.ghost && this.renderLayers(cur);
     if (layers) { this.showLayers(box, layers); }
-    else if ((box.innerHTML = '', photo = s.view === 'back' ? cur.kase.img.back : cur.kase.img.front)) {
+    else if ((box.innerHTML = '', box.classList.remove('is-render'), box.style.aspectRatio = '', photo = s.view === 'back' ? cur.kase.img.back : cur.kase.img.front)) {
       var wrap = document.createElement('div'); wrap.className = 'pc-layers';
       var add = function (src) { if (!src) return; var i = document.createElement('img'); i.src = src; i.alt = ''; i.decoding = 'async'; wrap.appendChild(i); };
       add(photo);
@@ -388,8 +388,8 @@
      a missing switch layer is just left out. */
   P.renderLayers = function (cur) {
     var r = this.cfg.renders, s = this.state, self = this;
-    if (!r || !r.base) return null;
-    var name = function (n) { return r.base + n + (r.ext || '.png'); };
+    if (!r || !(r.base || r.files)) return null;
+    var name = function (n) { return r.files ? r.files[n] : r.base + n + (r.ext || '.png'); };
     var lay = s.lang + '-' + s.row + '-' + s.shift, open = this.step() === 2;
     var list = [{ key: 'body', src: name('body-' + s.view + '-' + cur.kase.key), need: true }];
     if (cur.frame) list.push({ key: 'frame', src: name('frame-' + s.view + '-' + cur.frame.key), need: true });
@@ -398,7 +398,7 @@
       var caps = this.capsRender(cur);
       if (caps) list.push({ key: 'keycaps', src: caps === 'placeholder' ? this.cfg.customKeycapImage : name('keycaps-' + lay + '-' + caps), need: caps !== 'placeholder' });
     }
-    if (list.some(function (l) { return l.need && self.missing[l.src]; })) return null;
+    if (list.some(function (l) { return l.need && (!l.src || self.missing[l.src]); })) return null;
     return list.filter(function (l) { return l.src && !self.missing[l.src]; });
   };
   // which keycap render goes on top: a famous-set preview, the in-stock kit picked under Custom, or the colorway
@@ -416,6 +416,7 @@
     if (!wrap || !wrap.classList || !wrap.classList.contains('pc-layers')) {
       box.innerHTML = ''; wrap = document.createElement('div'); wrap.className = 'pc-layers'; box.appendChild(wrap);
     }
+    box.classList.add('is-render'); // renders fill the box edge to edge; their own floor is the background
     var want = {}; list.forEach(function (l) { want[l.key] = l.src; });
     this.shownLayer = want;
     $$('img', wrap).forEach(function (img) { if (!(img.dataset.layer in want)) img.remove(); });
@@ -429,6 +430,7 @@
       img.onload = function () {
         if (self.shownLayer[l.key] !== l.src) { img.remove(); return; }
         img.className = 'pc-pop';
+        if (l.key === 'body' && img.naturalWidth) box.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
         img.addEventListener('animationend', settle, { once: true });
         setTimeout(settle, 600); // no animation with reduced motion
       };

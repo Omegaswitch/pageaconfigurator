@@ -69,6 +69,8 @@ Names are lowercase with hyphens, exactly like the option names: `body-front-tea
 
 What the customer sees: the body as soon as it's picked, then the frame on top, then the switches, then the keycaps. Switching one option only swaps that one layer (it loads first, then fades in over the old one, so nothing flickers).
 
+Renders fill the preview box edge to edge, and the box takes the shape of your body render, so a floor baked into the body files becomes the background.
+
 Missing files: if the body, frame or keycap render for a combination is missing, the whole preview falls back to the drawing for that combination, so a set you haven't rendered yet still shows correctly. A missing switch render is simply left out (the keycaps cover it anyway).
 
 ### Rendering them so they line up
