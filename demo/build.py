@@ -46,7 +46,7 @@ config = {
     "customKeycapImage": None,
     "kit": {"title": "Pangea Mini IM", "variants": kit_variants},
     "assembly": {"id": vid(), "title": "Assembly", "price": 4500, "available": True},
-    "blocks": [{"type": "case_color", "name": n, "hex": h, "translucent": True, "img": {}} for n, h in cases]
+    "blocks": [{"type": "stock_kit", "preset": pid, "variant": {"id": vid(), "price": pr, "available": True}} for pid, pr in [("gmk-wob3", 15900), ("gmk-dolch", 16900), ("swg-prepress", 11900), ("swg-beige", 10900)]] + [{"type": "case_color", "name": n, "hex": h, "translucent": True, "img": {}} for n, h in cases]
               + [{"type": "frame", "name": n, "hex": h} for n, h in frames] + switches + keycaps,
 }
 

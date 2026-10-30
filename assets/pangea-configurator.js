@@ -126,9 +126,11 @@
     this.state = {
       kase: null, frame: this.frames.length ? null : 'none', sw: null, swMode: 'premade',
       kc: null,
-      lang: 'ansi', row: '625', shift: 'split', view: 'front', notes: '', qty: 1, preview: null
+      lang: 'ansi', row: '625', shift: 'split', view: 'front', qty: 1, preview: null, customSet: null
     };
     this.presetList = this.presets().map(function (p) { return Object.assign({ key: p.id }, p); });
+    var stock = {}; (cfg.blocks || []).filter(function (b) { return b.type === 'stock_kit' && b.preset; }).forEach(function (b) { stock[b.preset] = b.variant || null; });
+    this.stock = stock;
     this.readUrl();
     this.build();
     this.update();
@@ -163,7 +165,8 @@
   P.current = function () {
     var s = this.state, kc = this.find(this.keycaps, s.kc);
     var kase = this.find(this.cases, s.kase), frame = this.find(this.frames, s.frame);
-    return { kase: kase, frame: frame, kit: this.kitVariant(kase, frame), sw: this.find(this.switches, s.sw), kc: kc, kcVariant: kc ? this.keycapVariant(kc) : null };
+    var cset = kc && kc.custom && s.customSet && (s.customSet in this.stock) ? this.find(this.presetList, s.customSet) : null;
+    return { cset: cset, csetVariant: cset ? this.stock[cset.key] || null : null, kase: kase, frame: frame, kit: this.kitVariant(kase, frame), sw: this.find(this.switches, s.sw), kc: kc, kcVariant: kc ? this.keycapVariant(kc) : null };
   };
   // kit variants are Body x Frame (e.g. "Teal / Silver Anodized"); falls back to body only
   P.kitVariant = function (kase, frame) {
@@ -235,9 +238,15 @@
           (this.frames.length ? this.group('Frame and Weight', 'frame', '<div class="pc-opts">' + frames + '</div>', '', 1) : '') +
           this.group('Switches', 'sw', '<div class="pc-list">' + premade + '</div><div class="pc-list pc-more" data-selection hidden>' + selection + '</div>' + (c.switchNote ? '<p class="pc-note">' + esc(c.switchNote) + '</p>' : '')) +
           this.group('Keycaps', 'kc', '<div class="pc-opts">' + kcs + '</div>' +
-            '<div class="pc-custom" data-custom-kc hidden><label for="pc-notes-' + this.uid + '">Which set?</label>' +
-            '<textarea id="pc-notes-' + this.uid + '" rows="2" data-notes placeholder="Name, kits, or a link"></textarea>' +
-            '<p class="pc-note">Custom sets are shown blank. We confirm fit by email before building.</p></div>' +
+            '<div class="pc-custom" data-custom-kc hidden>' +
+              (function () {
+                var inStock = self.presetList.filter(function (p) { return p.key in self.stock; });
+                var list = function (arr, quoted) { return '<div class="pc-opts pc-opts--small">' + arr.map(function (p) {
+                  var v = self.stock[p.key], out = v && v.available === false;
+                  return self.opt('cks', p.key, false, out, esc(p.name) + (quoted ? '' : ' <span class="pc-opt-tag">' + (out ? 'Sold out' : self.price(v)) + '</span>'));
+                }).join('') + '</div>'; };
+                return inStock.length ? '<p class="pc-famous-brand">IN STOCK KITS</p>' + list(inStock, false) : '<p class="pc-note">No in-stock kits right now.</p>';
+              })() + '</div>' +
             (this.presetList.length ? '<div class="pc-famous"><button type="button" class="pc-famous-toggle" data-famous aria-expanded="false">Preview with famous sets</button>' +
               '<div class="pc-famous-panel" data-famous-panel hidden><p class="pc-note">Preview only, to imagine the board with other sets. These are not part of your order.</p>' +
               ['GMK', 'SWG'].map(function (brand) {
@@ -288,15 +297,15 @@
       }
       if (g === 'swc') { s.swMode = 'custom'; s.sw = t.value; var cu = $('input[data-group="sw"][value="__custom"]', r); if (cu) cu.checked = true; }
       if (g === 'kc') { s.kc = t.value; s.preview = null; $$('input[data-group="pre"]', r).forEach(function (i) { i.checked = false; }); }
+      if (g === 'cks') { s.customSet = t.value; s.preview = null; $$('input[data-group="pre"]', r).forEach(function (i) { i.checked = false; }); }
       if (g === 'pre') { s.preview = t.value; s.altMods = null; $$('input[data-group="kc"]', r).forEach(function (i) { i.checked = false; }); }
       if (g === 'lang') s.lang = t.value;
       if (g === 'row') s.row = t.value;
       if (g === 'shift') s.shift = t.value;
-      if (/^(sw|swc|kc|pre)$/.test(g)) s.view = 'front'; // switches and keycaps only show from the front
+      if (/^(sw|swc|kc|pre|cks)$/.test(g)) s.view = 'front'; // switches and keycaps only show from the front
       self.update();
     });
     r.addEventListener('input', function (e) {
-      if (e.target.matches('[data-notes]')) s.notes = e.target.value;
       if (e.target.matches('[data-qty-input]')) { s.qty = Math.max(1, parseInt(e.target.value, 10) || 1); self.renderSummary(); }
     });
     r.addEventListener('click', function (e) {
@@ -332,7 +341,7 @@
     $('[data-chosen="case"]', r).textContent = cur.kase ? cur.kase.name : '';
     if ($('[data-chosen="frame"]', r)) $('[data-chosen="frame"]', r).textContent = cur.frame ? cur.frame.name : '';
     $('[data-chosen="sw"]', r).textContent = cur.sw ? cur.sw.name : '';
-    $('[data-chosen="kc"]', r).textContent = cur.kc ? cur.kc.name : '';
+    $('[data-chosen="kc"]', r).textContent = cur.kc ? (cur.cset ? cur.cset.name : cur.kc.name) : '';
     this.renderStage();
     this.renderSummary();
     this.writeUrl();
@@ -365,7 +374,7 @@
       : !cur.sw ? cur.kase.name + ' / ' + cur.frame.name + ' / pick switches'
       : s.preview && this.find(this.presetList, s.preview) ? 'Preview: ' + this.find(this.presetList, s.preview).name + (this.find(this.presetList, s.preview).altKeys ? (this.altOn(this.find(this.presetList, s.preview)) ? ', alt mods' : ', base mods') : '') + ' (not included) / ' + (s.lang === 'iso-fr' ? 'ISO' : 'ANSI')
       : !cur.kc ? cur.sw.name + ' installed / pick keycaps'
-      : [LONG[s.lang], LONG[s.row], LONG[s.shift]].join(' / ') + (cur.kc.custom ? ' / custom keycaps shown blank' : '');
+      : [LONG[s.lang], LONG[s.row], LONG[s.shift]].join(' / ') + (cur.kc.custom ? (cur.cset ? ' / ' + cur.cset.name : ' / pick a set') : '');
     cap.textContent = txt;
   };
 
@@ -525,7 +534,7 @@
       el('rect', { x: PAD - 13, y: PAD - 13, width: 15 * U + 26, height: 5 * U + 26, rx: 7, fill: cur.frame.hex, 'class': this.fresh('frame') ? 'pc-pop' : null }, svg);
       el('rect', { x: PAD - 13, y: PAD - 13, width: 15 * U + 26, height: 5 * U + 26, rx: 7, fill: 'none', stroke: shade(cur.frame.hex, -22), 'stroke-width': 1 }, svg);
     }
-    var pre = !cur.ghost && this.state.preview ? this.find(this.presetList, this.state.preview) : null;
+    var pre = !cur.ghost && this.state.preview ? this.find(this.presetList, this.state.preview) : (!cur.ghost && cur.cset ? cur.cset : null);
     var showCaps = !cur.ghost && (cur.kc || pre);
     var mode = showCaps ? 'caps' : (!cur.ghost && cur.sw ? 'switches' : (!cur.ghost && cur.frame ? 'cutouts' : 'inside'));
     if (mode === 'inside') { this.drawInside(svg, k); return svg; }
@@ -822,7 +831,9 @@
     out.push({ label: (c.kitLabel || 'Pangea Mini IM') + ', ' + cur.kase.name + (cur.frame ? ' / ' + cur.frame.name : ''), variant: cur.kit });
     if (this.step() < 2) return out;
     if (cur.sw) out.push({ label: cur.sw.name + ' switches', variant: cur.sw.variant });
-    if (cur.kc) out.push({ label: cur.kc.custom ? 'Custom keycaps' : cur.kc.name + ' keycaps, ' + LANG[s.lang], variant: cur.kcVariant, quoted: cur.kc.custom && !cur.kcVariant });
+    if (cur.kc) out.push(cur.kc.custom
+      ? { label: cur.cset ? cur.cset.name : 'Custom keycaps', variant: cur.csetVariant, missing: !cur.cset }
+      : { label: cur.kc.name + ' keycaps, ' + LANG[s.lang], variant: cur.kcVariant });
     if (c.assembly) out.push({ label: c.assembly.title || 'Assembly', variant: c.assembly });
     return out;
   };
@@ -837,7 +848,7 @@
     $('[data-total]', this.root).textContent = t;
     $('[data-total-top]', this.root).textContent = this.money.format(total / 100);
     var step = this.step(), cur = this.current(), add = $('[data-add]', this.root);
-    var need = step === 0 ? 'Pick a body' : step === 1 ? 'Pick a frame' : !cur.sw ? 'Pick switches' : !cur.kc ? 'Pick keycaps' : '';
+    var need = step === 0 ? 'Pick a body' : step === 1 ? 'Pick a frame' : !cur.sw ? 'Pick switches' : !cur.kc ? 'Pick keycaps' : cur.kc.custom && !cur.cset ? 'Pick a keycap set' : '';
     add.disabled = !!need || !!this.busy;
     add.textContent = need || (this.busy ? 'Adding' : 'Add to cart');
     $('[data-total-top]', this.root).hidden = step === 0;
@@ -848,12 +859,13 @@
     var props = { 'Body': cur.kase.name };
     if (cur.frame) props['Frame and weight'] = cur.frame.name;
     Object.assign(props, { 'Switches': cur.sw.name, 'Keycaps': cur.kc.name, 'Layout': LONG[s.lang], 'Bottom row': LONG[s.row], 'Right shift': LONG[s.shift] });
-    if (cur.kc.custom && s.notes.trim()) props['Custom keycaps'] = s.notes.trim();
+    if (cur.kc.custom && cur.cset) props['Keycaps'] = cur.cset.name + ' (in-stock kit)';
     props['Build link'] = this.shareUrl();
     props._build = gid;
     var part = { 'Build': gid, _build: gid }, items = [{ id: cur.kit.id, quantity: s.qty, properties: props }];
     if (cur.sw.variant) items.push({ id: cur.sw.variant.id, quantity: s.qty, properties: part });
-    if (cur.kcVariant) items.push({ id: cur.kcVariant.id, quantity: s.qty, properties: part });
+    var kv = cur.kc.custom ? cur.csetVariant : cur.kcVariant;
+    if (kv) items.push({ id: kv.id, quantity: s.qty, properties: part });
     if (c.assembly) items.push({ id: c.assembly.id, quantity: s.qty, properties: part });
     return { items: items.reverse() }; // Shopify lists the newest line first; this keeps the kit on top
   };
@@ -866,6 +878,7 @@
     if (this.step() < 2) return this.fail('Pick a body and a frame first.');
     if (!cur.kit) return this.fail('This body and frame combination isn\'t linked to a product variant yet.');
     if (!cur.sw) return this.fail('Pick switches first.');
+    if (cur.kc && cur.kc.custom && !cur.cset) return this.fail('Pick a keycap set.');
     if (!cur.kc) return this.fail('Pick keycaps first.');
     var body = this.payload();
     if (this.cfg.demo) { (window.PangeaDemoCart || function () {})(body, this); return; }

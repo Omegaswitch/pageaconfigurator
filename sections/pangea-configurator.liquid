@@ -62,6 +62,10 @@
                       "front": {% if b.image_front != blank %}{{ b.image_front | image_url: width: 2000 | json }}{% else %}null{% endif %},
                       "back": {% if b.image_back != blank %}{{ b.image_back | image_url: width: 2000 | json }}{% else %}null{% endif %}
                     } }
+                {%- when 'stock_kit' -%}
+                  {%- assign kv = b.product.selected_or_first_available_variant -%}
+                  { "type": "stock_kit", "preset": {{ b.preset | json }},
+                    "variant": {% if kv %}{ "id": {{ kv.id }}, "price": {{ kv.price }}, "available": {{ kv.available }} }{% else %}null{% endif %} }
                 {%- when 'frame' -%}
                   { "type": "frame", "name": {{ b.name | json }}, "hex": {{ b.swatch | json }} }
                 {%- when 'switch' -%}
@@ -133,6 +137,14 @@
         { "type": "checkbox", "id": "translucent", "label": "Translucent case", "default": true },
         { "type": "image_picker", "id": "image_front", "label": "Front photo (optional)", "info": "Transparent PNG/WebP of the empty case. When set, photos replace the drawn preview." },
         { "type": "image_picker", "id": "image_back", "label": "Back photo (optional)" }
+      ]
+    },
+    {
+      "type": "stock_kit",
+      "name": "In-stock keycap kit",
+      "settings": [
+        { "type": "text", "id": "preset", "label": "Set ID", "info": "ID from pangea-keycap-presets.js, e.g. gmk-dolch or swg-prepress. Other sets show under 'On request'." },
+        { "type": "product", "id": "product", "label": "Keycap product", "info": "Added to the cart when a customer picks this kit under Custom." }
       ]
     },
     {

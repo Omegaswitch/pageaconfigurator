@@ -46,6 +46,10 @@ By default the board is drawn live (SVG), traced from the Pangea Mini IM line dr
 
 If you have renders, add them as transparent PNG/WebP layers of the same size: case front/back on each **Case color** block, keycap layers on each **Keycaps** block (one for ANSI, one for ISO FR). When a case photo is set, photos replace the drawing. The custom keycap placeholder image is set on the section.
 
+## Custom keycaps
+
+Picking **Custom** under Keycaps opens a list of your **in-stock kits** (no free-text box). Add one **In-stock keycap kit** block per kit you actually stock: the set ID from `pangea-keycap-presets.js` (so the board can draw it) plus its product, which is added to the cart. Sets not added as in-stock kits stay preview only and can't be ordered.
+
 ## Famous keycap sets (preview only)
 
 "Preview with famous sets" under Keycaps lets customers see the board in 20 GMK sets and 13 SWG sets. Each preview uses its set's own legend style (GMK word or symbol modifiers, Cyrillic for Taiga and Varanye, kana for Ramune) and colours. Sets that come with an alt mods kit (GMK Varanye, SWG Ferrofluid, SWG Nightshift) show a Base mods / Alt mods toggle under the preview; they open on alt mods. Previews are never added to the cart; the customer's real keycap choice stays in the order. Turn it off with **Show 'Preview with famous sets'** in the section settings. The colour data lives in `pangea-keycap-presets.js`.
