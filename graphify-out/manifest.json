@@ -1,0 +1,56 @@
+{
+  "assets/pangea-configurator.js": {
+    "mtime": 1793620471.194905,
+    "seen": 1793620528.338815,
+    "ast_hash": "aa1073bf6887b1e34f2af6e2912faba7",
+    "semantic_hash": ""
+  },
+  "assets/pangea-keycap-presets.js": {
+    "mtime": 1793620471.194905,
+    "seen": 1793620528.3388216,
+    "ast_hash": "ea1e0df3477ac19f9dfd8f723d7866a2",
+    "semantic_hash": ""
+  },
+  "demo/build.py": {
+    "mtime": 1793620471.194905,
+    "seen": 1793620528.3388247,
+    "ast_hash": "24bbc1a6b090ec7d63e915e6f732a8aa",
+    "semantic_hash": ""
+  },
+  "demo/data/delta-switches.json": {
+    "mtime": 1793620471.195777,
+    "seen": 1793620528.3388262,
+    "ast_hash": "fe55c9d362497e7afe81d12b74b2bfe8",
+    "semantic_hash": ""
+  },
+  "tools/build_presets.py": {
+    "mtime": 1793620471.195777,
+    "seen": 1793620528.3388278,
+    "ast_hash": "0e3dc65914df872042b0eecc78cabd3d",
+    "semantic_hash": ""
+  },
+  "tools/data/rainbow-legends.json": {
+    "mtime": 1793620471.1974902,
+    "seen": 1793620528.338829,
+    "ast_hash": "d55d7daf4651dacf8606946aa84db59d",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793620471.1936374,
+    "seen": 1793620528.33883,
+    "ast_hash": "a77f1597c73f17d97936d3f24e0703ae",
+    "semantic_hash": ""
+  },
+  "demo/index.html": {
+    "mtime": 1793620471.195777,
+    "seen": 1793620528.3388314,
+    "ast_hash": "709e426a763c7cb5a4b3ccf730eb16e2",
+    "semantic_hash": ""
+  },
+  "demo/template.html": {
+    "mtime": 1793620471.195777,
+    "seen": 1793620528.3388326,
+    "ast_hash": "d084ab863169a212ced1d4830a849279",
+    "semantic_hash": ""
+  }
+}
